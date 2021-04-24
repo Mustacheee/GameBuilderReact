@@ -3,6 +3,7 @@ import styles from './Login.module.scss';
 import validationSchema from './validationSchema';
 import { Formik } from 'formik';
 import { TextField, Button } from '@material-ui/core';
+import { login } from '../../utils/api';
 
 interface LoginForm {
   email: string;
@@ -12,8 +13,10 @@ interface LoginForm {
 const Login = () => {
   const initialValues: LoginForm = { email: '', password: '' };
 
-  const onSubmit = (values: LoginForm) => {
+  const onSubmit = async (values: LoginForm) => {
     console.log(values);
+    const response = await login(values);
+    console.log(response)
   }
 
   return (
