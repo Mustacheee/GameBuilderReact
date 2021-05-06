@@ -1,22 +1,40 @@
-import React from 'react';
+import React, { FunctionComponent } from 'react';
 import styles from './Login.module.scss';
 import validationSchema from './validationSchema';
-import { Formik } from 'formik';
+import { Formik, FormikHelpers } from 'formik';
 import { TextField, Button } from '@material-ui/core';
 import { login } from '../../utils/api';
+import { connect } from 'react-redux';
+import { authSuccess, authFail } from '../../store/actions/auth';
+import { Dispatch } from 'redux';
 
 interface LoginForm {
   email: string;
   password: string;
 }
 
-const Login = () => {
+type LoginProps = {
+  loginFailed: () => void;
+  loginSuccess: (apiToken: string) => void;
+}
+
+const Login: FunctionComponent<LoginProps> = ({
+  loginFailed,
+  loginSuccess,
+}) => {
   const initialValues: LoginForm = { email: '', password: '' };
 
-  const onSubmit = async (values: LoginForm) => {
-    console.log(values);
-    const response = await login(values);
-    console.log(response)
+  const onSubmit = async (values: LoginForm, { setFieldError }: FormikHelpers<LoginForm>) => {
+    const { status, token, message = '', ...userProps } = await login(values);
+
+    if (status === 'success') {
+      console.log('sdf', userProps);
+      loginSuccess(token);
+      return;
+    }
+
+    loginFailed();
+    setFieldError('email', message)
   }
 
   return (
@@ -69,4 +87,11 @@ const Login = () => {
   );
 };
 
-export default Login;
+const mapDispatchToProps = (dispatch: Dispatch) => {
+  return {
+    loginSuccess: (apiToken: string) => dispatch(authSuccess(apiToken)),
+    loginFailed: () => dispatch(authFail()),
+  };
+}
+
+export default connect(null, mapDispatchToProps)(Login);
