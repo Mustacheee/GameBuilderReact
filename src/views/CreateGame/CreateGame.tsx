@@ -25,7 +25,6 @@ const CreateGame: FunctionComponent<CreateGameProps> = ({
   };
 
   const onSubmit = async (values: CreateGameForm) => {
-    console.log('submiiiiit', values);
     const { data = {}} = await createGame(values, apiToken);
     const { id: gameId } = data;
 

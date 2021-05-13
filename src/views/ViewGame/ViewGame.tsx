@@ -5,7 +5,7 @@ import React, {
 } from 'react';
 import { useParams } from 'react-router';
 import { RootState } from '../../store/reducer';
-import { createCategory } from '../../utils/api';
+import { API_SUCCESS, createCategory } from '../../utils/api';
 import styles from './ViewGame.module.scss';
 import { Button } from '../../components/Button';
 import { Formik, FormikHelpers } from 'formik';
@@ -48,10 +48,18 @@ const ViewGame: FunctionComponent<ViewGameProps> = ({ apiToken }) => {
 
   const onSubmit = async (
     values: ViewGameForm,
-    { setFieldError }: FormikHelpers<ViewGameForm>
+    { setFieldError, setFieldValue }: FormikHelpers<ViewGameForm>
   ) => {
-    const response = await createCategory(gameId, values, apiToken);
-    console.log(response);
+    const { status, errors = {} } = await createCategory(gameId, values, apiToken);
+
+    if (status === API_SUCCESS) {
+      setFieldValue('category[name]', '');
+      return;
+    }
+
+    Object.entries(errors).forEach(([field, fieldErrors]: [string, any]) => {
+      setFieldError(`category[${field}]`, fieldErrors[0])
+    })
   };
 
   const initialValues: ViewGameForm = { category: { name: '' } };
