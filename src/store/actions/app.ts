@@ -11,6 +11,7 @@ const appInitialzed = () => {
   }
 }
 
+
 const appStart = () => {
   return async (dispatch: Dispatch) => {
     const state = store.getState();
@@ -29,7 +30,7 @@ const appStart = () => {
         dispatch(userUpdate(userData));
       } else {
         // Restart app on fail
-        appRestart()(dispatch);
+        // appRestart()(dispatch);
       }
     }
     // TODO:: Should I reset when no apiToken ???

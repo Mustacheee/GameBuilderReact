@@ -11,30 +11,26 @@ import {
 } from "react-router-dom";
 import { Dispatch } from 'redux';
 import { appStart } from './store/actions/app';
-import { DASHBOARD, LOGIN, GAME_CREATE, } from './utils/routes';
+import { DASHBOARD, LOGIN, GAME_CREATE, GAME_VIEW, } from './utils/routes';
 import CreateGame from './views/CreateGame';
+import ViewGame from './views/ViewGame';
 
 type AppProps = {
-  apiToken: string | null;
-  initializeApp: (apiToken: string | null, isAuthenticated: boolean) => void;
+  initializeApp: () => void;
   isAuthenticated: boolean;
   isInitialized: boolean;
 }
 
 const App: FunctionComponent<AppProps> = ({
-  apiToken,
   initializeApp,
   isAuthenticated,
   isInitialized,
 }) => {
 
+  // Initialize the application
   useEffect(() => {
-    const start = async () => {
-      initializeApp(apiToken, isAuthenticated);
-    }
-
-    start();
-  }, [apiToken, initializeApp, isAuthenticated])
+    initializeApp();
+  }, [initializeApp])
 
   const routes = isAuthenticated
     ? getAuthenticatedRoutes()
@@ -42,15 +38,13 @@ const App: FunctionComponent<AppProps> = ({
 
   return (
     <BrowserRouter>
-      <Switch>
-        {isInitialized && routes}
-      </Switch>
-    </BrowserRouter>
+      {isInitialized && routes}
+    </BrowserRouter >
   );
 }
 
 const getUnauthenticatedRoutes = () => {
-  return (<>
+  return (<Switch>
     <Route path={LOGIN}>
       <Login />
     </Route>
@@ -58,11 +52,11 @@ const getUnauthenticatedRoutes = () => {
     <Route>
       <Redirect to={LOGIN} />
     </Route>
-  </>);
+  </Switch>);
 }
 
 const getAuthenticatedRoutes = () => {
-  return (<>
+  return (<Switch>
     <Route path={DASHBOARD}>
       <Dashboard />
     </Route>
@@ -71,15 +65,18 @@ const getAuthenticatedRoutes = () => {
       <CreateGame />
     </Route>
 
+    <Route path={GAME_VIEW}>
+      <ViewGame />
+    </Route>
+
     <Route>
       <Redirect to={DASHBOARD} />
     </Route>
-  </>);
+  </Switch>);
 }
 
 const mapStateToProps = (state: RootState) => {
   return {
-    apiToken: state.auth.apiToken,
     isAuthenticated: state.auth.isAuthenticated,
     isInitialized: state.app.isInitialized,
   }
