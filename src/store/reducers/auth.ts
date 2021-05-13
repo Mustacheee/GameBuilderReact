@@ -5,31 +5,37 @@ import {
   AuthAction,
 } from '../actions/actionTypes';
 
-export interface AuthState {
+interface AuthState {
   apiToken: string | null;
+  isAuthenticated: boolean;
 }
 
 const initialState: AuthState = {
   apiToken: null,
+  isAuthenticated: false,
 };
 
 const authSuccess = (state: AuthState, { apiToken = '' }: AuthAction) => {
   return {
     ...state,
     apiToken,
-    message: null,
+    isAuthenticated: true,
   };
 };
 
 const authFail = (state: AuthState) => {
-  return { ...state, apiToken: null };
+  return {
+    ...state,
+    apiToken: null,
+    isAuthenticated: false
+  };
 };
 
 const authReset = () => {
   return initialState;
 };
 
-const reducer = (state = initialState, action: AuthAction): AuthState => {
+const authReducer = (state = initialState, action: AuthAction): AuthState => {
   switch (action.type) {
     case AUTH_SUCCESS:
       return authSuccess(state, action);
@@ -42,4 +48,6 @@ const reducer = (state = initialState, action: AuthAction): AuthState => {
   }
 };
 
-export default reducer;
+export default authReducer;
+
+export { authReducer };

@@ -25,10 +25,10 @@ const Login: FunctionComponent<LoginProps> = ({
   const initialValues: LoginForm = { email: '', password: '' };
 
   const onSubmit = async (values: LoginForm, { setFieldError }: FormikHelpers<LoginForm>) => {
-    const { status, token, message = '', ...userProps } = await login(values);
+    const { status, token, message = '', userData } = await login(values);
 
     if (status === 'success') {
-      console.log('sdf', userProps);
+      console.log('sdf', userData);
       loginSuccess(token);
       return;
     }
