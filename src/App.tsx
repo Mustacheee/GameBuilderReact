@@ -11,7 +11,8 @@ import {
 } from "react-router-dom";
 import { Dispatch } from 'redux';
 import { appStart } from './store/actions/app';
-import { DASHBOARD, LOGIN } from './utils/routes';
+import { DASHBOARD, LOGIN, GAME_CREATE, } from './utils/routes';
+import CreateGame from './views/CreateGame';
 
 type AppProps = {
   apiToken: string | null;
@@ -36,24 +37,8 @@ const App: FunctionComponent<AppProps> = ({
   }, [apiToken, initializeApp, isAuthenticated])
 
   const routes = isAuthenticated
-    ? (<>
-      <Route path={DASHBOARD}>
-        <Dashboard />
-      </Route>
-
-      <Route>
-        <Redirect to={DASHBOARD} />
-      </Route>
-    </>)
-    : (<>
-      <Route path={LOGIN}>
-        <Login />
-      </Route>
-
-      <Route>
-        <Redirect to={LOGIN} />
-      </Route>
-    </>);
+    ? getAuthenticatedRoutes()
+    : getUnauthenticatedRoutes();
 
   return (
     <BrowserRouter>
@@ -62,6 +47,34 @@ const App: FunctionComponent<AppProps> = ({
       </Switch>
     </BrowserRouter>
   );
+}
+
+const getUnauthenticatedRoutes = () => {
+  return (<>
+    <Route path={LOGIN}>
+      <Login />
+    </Route>
+
+    <Route>
+      <Redirect to={LOGIN} />
+    </Route>
+  </>);
+}
+
+const getAuthenticatedRoutes = () => {
+  return (<>
+    <Route path={DASHBOARD}>
+      <Dashboard />
+    </Route>
+
+    <Route path={GAME_CREATE}>
+      <CreateGame />
+    </Route>
+
+    <Route>
+      <Redirect to={DASHBOARD} />
+    </Route>
+  </>);
 }
 
 const mapStateToProps = (state: RootState) => {
