@@ -1,71 +1,48 @@
 import { connect } from 'react-redux';
 import React, {
   FunctionComponent,
-  useContext,
-  useEffect,
   useState,
 } from 'react';
 import { useParams } from 'react-router';
 import { RootState } from '../../store/reducer';
-import { API_SUCCESS, createCategory, viewGame } from '../../utils/api';
+import { createCategory } from '../../utils/api';
 import styles from './ViewGame.module.scss';
 import { Button } from '../../components/Button';
 import { Formik, FormikHelpers } from 'formik';
 import { TextField } from '@material-ui/core';
 import { ViewGameForm } from '.';
-import { SocketContext } from '../../utils/contexts';
+import useChannel from '../../utils/hooks/useChannel';
+import { Game, Category } from '../../types';
 
 type ViewGameProps = {
   apiToken: string;
 };
 
-interface Category {
-  id: string;
-  name: string;
-}
+const initialState: Game = {
+  categories: [],
+  id: '',
+  name: '',
+};
+
+const gameReducer = (state: Game, action: any) => {
+  switch (action.type) {
+    case 'phx_reply':
+      const newState = action.payload?.response || initialState;
+      return newState;
+    case 'new_category':
+      const category = action.payload?.category;
+      if (category) {
+        return {...state, categories: [...(state.categories), category]}
+      }
+  }
+
+  return state;
+};
 
 const ViewGame: FunctionComponent<ViewGameProps> = ({ apiToken }) => {
   const { gameId } = useParams<{ gameId: string }>();
-  const [categories, setCategories] = useState([]);
-  const [name, setName] = useState('');
   const [isAddCategory, setIsAddCategory] = useState(false);
-
-  const socket = useContext(SocketContext);
-  console.log(socket);
-
-  useEffect(() => {
-    const getDetails = async () => {
-      const response = await viewGame(gameId, apiToken);
-      console.log('qqqwe', response);
-      const { status, data } = response;
-
-      if (status === API_SUCCESS) {
-        const { categories = [], name = '' } = data;
-        setCategories(categories);
-        setName(name);
-
-        const channel = socket.channel('game:lobby');
-        channel.onMessage = (event, payload) => {
-          console.log('event', event, 'payload', payload);
-          return payload;
-        };
-
-        channel
-          .join()
-          .receive('ok', (messages: any) =>
-            console.log('catching up', messages)
-          )
-          .receive('error', (reason: any) => console.log('failed join', reason))
-          .receive('timeout', (err = '') =>
-            console.log('Networking issue. Still waiting...', err)
-          );
-
-        return () => channel.leave();
-      }
-    };
-
-    getDetails();
-  }, [apiToken, gameId]);
+  const [{ categories, name }] = useChannel(`game:${gameId}`, gameReducer, initialState) as [Game];
 
   const toggleAddCategory = () => setIsAddCategory(!isAddCategory);
 
@@ -73,7 +50,6 @@ const ViewGame: FunctionComponent<ViewGameProps> = ({ apiToken }) => {
     values: ViewGameForm,
     { setFieldError }: FormikHelpers<ViewGameForm>
   ) => {
-    console.log('submit', values);
     const response = await createCategory(gameId, values, apiToken);
     console.log(response);
   };

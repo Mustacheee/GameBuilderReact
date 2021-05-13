@@ -17,3 +17,6 @@ export interface UserAction {
     type: typeof USER_UPDATE | typeof USER_RESET;
     user: UserState,
 }
+
+
+export const GAME_ADD_CATEGORY = 'GAME_ADD_CATEGORY';

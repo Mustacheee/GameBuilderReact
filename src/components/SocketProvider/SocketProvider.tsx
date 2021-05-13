@@ -1,4 +1,4 @@
-import React, { FunctionComponent, ReactNode, useEffect } from 'react';
+import React, { FunctionComponent, ReactNode, useEffect, useMemo } from 'react';
 import { SocketContext } from '../../utils/contexts';
 import { Socket } from 'phoenix';
 
@@ -13,10 +13,14 @@ const SocketProvider: FunctionComponent<SocketProviderProps> = ({
   options,
   children,
 }) => {
-  const socket = new Socket(wsUrl, { params: options });
+  const socket = useMemo(
+    () => new Socket(wsUrl, { params: options }),
+    [options, wsUrl]
+  );
+
   useEffect(() => {
     socket.connect();
-  }, [options, wsUrl]);
+  }, [socket]);
 
   return (
     <SocketContext.Provider value={socket}>{children}</SocketContext.Provider>
