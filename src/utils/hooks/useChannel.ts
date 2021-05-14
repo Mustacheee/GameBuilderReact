@@ -1,9 +1,10 @@
-import { useContext, useEffect, useReducer } from 'react';
+import { Dispatch, Reducer, useContext, useEffect, useReducer } from 'react';
+import { ChannelAction } from '../../types';
 import { SocketContext } from '../contexts';
 
-const useChannel = (channelName, reducer, initialState) => {
+const useChannel = <T extends unknown>(channelName: string, reducer: Reducer<T, ChannelAction>, initialState: T): [T] => {
   const socket = useContext(SocketContext);
-  const [state, dispatch] = useReducer(reducer, initialState);
+  const [state, dispatch]:[any, Dispatch<ChannelAction>] = useReducer(reducer, initialState);
 
   useEffect(() => {
     const channel = socket.channel(channelName);

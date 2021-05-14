@@ -5,17 +5,11 @@ import ReactDOM from 'react-dom';
 import reportWebVitals from './reportWebVitals';
 import store from './store';
 import { Provider } from 'react-redux';
-import SocketProvider from './components/SocketProvider/SocketProvider';
 
 ReactDOM.render(
   <React.StrictMode>
     <Provider store={store}>
-      <SocketProvider
-        wsUrl={'ws://localhost:4000/socket'}
-        options={{}}
-      >
-        <App />
-      </SocketProvider>
+      <App />
     </Provider>
   </React.StrictMode>,
   document.getElementById('root')

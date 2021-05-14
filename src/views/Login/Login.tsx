@@ -28,8 +28,7 @@ const Login: FunctionComponent<LoginProps> = ({
     const { status, token, message = '', userData } = await login(values);
 
     if (status === 'success') {
-      console.log('sdf', userData);
-      loginSuccess(token);
+      loginSuccess(`Bearer ${token}`);
       return;
     }
 

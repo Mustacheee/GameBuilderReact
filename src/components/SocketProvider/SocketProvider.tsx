@@ -3,16 +3,17 @@ import { SocketContext } from '../../utils/contexts';
 import { Socket } from 'phoenix';
 
 type SocketProviderProps = {
-  wsUrl: string;
-  options: any;
   children?: ReactNode;
+  options?: any;
+  wsUrl: string;
 };
 
 const SocketProvider: FunctionComponent<SocketProviderProps> = ({
-  wsUrl,
-  options,
   children,
+  options = {},
+  wsUrl,
 }) => {
+  console.log(wsUrl)
   const socket = useMemo(
     () => new Socket(wsUrl, { params: options }),
     [options, wsUrl]

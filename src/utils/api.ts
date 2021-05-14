@@ -25,7 +25,7 @@ const login = async (values: any) => {
 const createGame = async (values: CreateGameForm, apiToken: string) => {
   try {
     const { data } = await api.post('/games', values, {
-      headers: { Authorization: `Bearer ${apiToken}` },
+      headers: { Authorization: apiToken },
     });
     return data;
   } catch (err) {
@@ -36,7 +36,7 @@ const createGame = async (values: CreateGameForm, apiToken: string) => {
 const viewGame = async (gameId: string, apiToken: string) => {
   try {
     const { data } = await api.get(`/games/${gameId}`, {
-      headers: { Authorization: `Bearer ${apiToken}` },
+      headers: { Authorization: apiToken },
     });
     return data;
   } catch (err) {
@@ -52,7 +52,7 @@ const createCategory = async (
 ) => {
   try {
     const { data } = await api.post(`/games/${gameId}/categories`, values, {
-      headers: { Authorization: `Bearer ${apiToken}` },
+      headers: { Authorization: apiToken },
     });
     return data;
   } catch (err) {
@@ -67,7 +67,7 @@ const deleteCategory = async (
 ) => {
   try {
     const { data } = await api.delete(`/games/${gameId}/categories/${categoryId}`, {
-      headers: { Authorization: `Bearer ${apiToken}` },
+      headers: { Authorization: apiToken },
     });
     return data;
   } catch (err) {

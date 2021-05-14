@@ -6,12 +6,36 @@ import Button from '../../components/Button';
 import { goToCreateGame } from '../../utils/navigation';
 import { Link } from 'react-router-dom';
 import { GAME_CREATE } from '../../utils/routes';
+import useChannel from '../../utils/hooks/useChannel';
+import { ChannelAction, User } from '../../types';
 
 type DashboardProps = {
-
+  apiToken: string;
 }
 
-const Dashboard: FunctionComponent<DashboardProps> = ({ }) => {
+interface DashboardInfo {
+  user: User;
+}
+
+const initialValues: DashboardInfo = {
+  user: {
+    email: '',
+    firstName: '',
+    games: [],
+    lastName: '',
+    username: '',
+  },
+}
+
+const dashboardReducer = (state: DashboardInfo, {type, payload}: ChannelAction) => {
+  return state;
+}
+
+const Dashboard: FunctionComponent<DashboardProps> = ({
+  apiToken,
+}) => {
+  const [ dashboardState ] = useChannel<DashboardInfo>(`user:${apiToken}`, dashboardReducer, initialValues);
+
   return (
     <div className={styles.container}>
       <Link to={GAME_CREATE} className={styles.link}>
@@ -23,7 +47,7 @@ const Dashboard: FunctionComponent<DashboardProps> = ({ }) => {
 
 const mapStateToProps = (state: RootState) => {
   return {
-
+    apiToken: state.auth.apiToken || '',
   };
 }
 
