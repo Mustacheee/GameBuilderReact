@@ -1,0 +1,13 @@
+.container {
+    display: flex;
+
+    &:hover {
+        .actions {
+            display: block;
+        }
+    }
+}
+
+.actions {
+    display: none;
+}

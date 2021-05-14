@@ -40,7 +40,7 @@ const viewGame = async (gameId: string, apiToken: string) => {
     });
     return data;
   } catch (err) {
-    console.log('errrrr', err)
+    console.log('errrrr', err);
     return DEFAULT_ERROR;
   }
 };
@@ -60,4 +60,19 @@ const createCategory = async (
   }
 };
 
-export { API_ERROR, API_SUCCESS, login, createGame, viewGame, createCategory };
+const deleteCategory = async (
+  gameId: string,
+  categoryId: string,
+  apiToken: string
+) => {
+  try {
+    const { data } = await api.delete(`/games/${gameId}/categories/${categoryId}`, {
+      headers: { Authorization: `Bearer ${apiToken}` },
+    });
+    return data;
+  } catch (err) {
+    return DEFAULT_ERROR;
+  }
+};
+
+export { API_ERROR, API_SUCCESS, login, createGame, viewGame, createCategory, deleteCategory };

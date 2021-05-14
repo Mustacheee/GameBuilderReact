@@ -1,8 +1,5 @@
 import { connect } from 'react-redux';
-import React, {
-  FunctionComponent,
-  useState,
-} from 'react';
+import React, { FunctionComponent, useState } from 'react';
 import { useParams } from 'react-router';
 import { RootState } from '../../store/reducer';
 import { API_SUCCESS, createCategory } from '../../utils/api';
@@ -12,7 +9,8 @@ import { Formik, FormikHelpers } from 'formik';
 import { TextField } from '@material-ui/core';
 import { ViewGameForm } from '.';
 import useChannel from '../../utils/hooks/useChannel';
-import { Game, Category } from '../../types';
+import { Game, Category as CategoryType } from '../../types';
+import Category from '../../components/Category';
 
 type ViewGameProps = {
   apiToken: string;
@@ -24,16 +22,23 @@ const initialState: Game = {
   name: '',
 };
 
-const gameReducer = (state: Game, action: any) => {
-  switch (action.type) {
+const gameReducer = (state: Game, { type, payload }: any) => {
+  switch (type) {
     case 'phx_reply':
-      const newState = action.payload?.response || initialState;
+      const newState = payload?.response || initialState;
       return newState;
     case 'new_category':
-      const category = action.payload?.category;
+      const category = payload?.category;
       if (category) {
-        return {...state, categories: [...(state.categories), category]}
+        return { ...state, categories: [...state.categories, category] };
       }
+      break;
+    case 'delete_category':
+      const categoryId = payload?.category?.id;
+      return {
+        ...state,
+        categories: state.categories.filter(({ id }) => id !== categoryId),
+      };
   }
 
   return state;
@@ -42,7 +47,11 @@ const gameReducer = (state: Game, action: any) => {
 const ViewGame: FunctionComponent<ViewGameProps> = ({ apiToken }) => {
   const { gameId } = useParams<{ gameId: string }>();
   const [isAddCategory, setIsAddCategory] = useState(false);
-  const [{ categories, name }] = useChannel(`game:${gameId}`, gameReducer, initialState) as [Game];
+  const [{ categories, name }] = useChannel(
+    `game:${gameId}`,
+    gameReducer,
+    initialState
+  ) as [Game];
 
   const toggleAddCategory = () => setIsAddCategory(!isAddCategory);
 
@@ -50,7 +59,11 @@ const ViewGame: FunctionComponent<ViewGameProps> = ({ apiToken }) => {
     values: ViewGameForm,
     { setFieldError, setFieldValue }: FormikHelpers<ViewGameForm>
   ) => {
-    const { status, errors = {} } = await createCategory(gameId, values, apiToken);
+    const { status, errors = {} } = await createCategory(
+      gameId,
+      values,
+      apiToken
+    );
 
     if (status === API_SUCCESS) {
       setFieldValue('category[name]', '');
@@ -58,8 +71,8 @@ const ViewGame: FunctionComponent<ViewGameProps> = ({ apiToken }) => {
     }
 
     Object.entries(errors).forEach(([field, fieldErrors]: [string, any]) => {
-      setFieldError(`category[${field}]`, fieldErrors[0])
-    })
+      setFieldError(`category[${field}]`, fieldErrors[0]);
+    });
   };
 
   const initialValues: ViewGameForm = { category: { name: '' } };
@@ -75,12 +88,8 @@ const ViewGame: FunctionComponent<ViewGameProps> = ({ apiToken }) => {
                 <span className={styles.value}>{name}</span>
 
                 <div className={styles.categories}>
-                  {categories.map((category: Category, index) => {
-                    return (
-                      <div className={styles.category} key={index}>
-                        {category.name}
-                      </div>
-                    );
+                  {categories.map((category: CategoryType, index) => {
+                    return <Category category={category} key={index} />;
                   })}
                 </div>
 
