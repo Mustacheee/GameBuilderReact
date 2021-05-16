@@ -11,6 +11,7 @@ import CreateGame from './views/CreateGame';
 import ViewGame from './views/ViewGame';
 import { AuthenticatedSocketProvider } from './components/SocketProvider';
 import UnauthenticatedSocketProvider from './components/SocketProvider/UnauthenticatedSocketProvider';
+import { CircularProgress } from '@material-ui/core';
 
 type AppProps = {
   initializeApp: () => void;
@@ -41,7 +42,11 @@ const App: FunctionComponent<AppProps> = ({
     [isAuthenticated]
   );
 
-  console.log('appppp', isAuthenticated, isInitialized)
+  console.log(isInitialized, isAuthenticated)
+
+  if (!isInitialized) {
+    return <CircularProgress />;
+  }
 
   return (
     <BrowserRouter>

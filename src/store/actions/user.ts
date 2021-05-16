@@ -8,7 +8,6 @@ const userReset = () => {
 }
 
 const userUpdate = (userProps: User) => {
-  console.log(userProps)
   return {
     type: USER_UPDATE,
     user: userProps,

@@ -29,17 +29,17 @@ const SocketProvider: FunctionComponent<SocketProviderProps> = ({
       }
 
       socket.onClose = (payload: any) => {
-        console.log('closing socket connection', wsUrl, payload);
+        // console.log('closing socket connection', wsUrl, payload);
         return 'close';
       }
 
       socket.onError = (payload: any) => {
-        console.log('error with socket connection', wsUrl, payload);
+        // console.log('error with socket connection', wsUrl, payload);
         return 'error';
       }
 
       socket.onMessage = (payload: any) => {
-        console.log('message for socket connection', wsUrl, payload);
+        // console.log('message for socket connection', wsUrl, payload);
         return 'message';
       }
 

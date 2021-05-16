@@ -6,6 +6,10 @@ import reducer, { RootState } from './reducer';
 const cleanState = (persistedState: RootState) => {
   return {
     ...persistedState,
+    app: {
+      ...(persistedState.app || {}),
+      isInitialized: false,
+    },
     auth: {
       ...(persistedState.auth || {}),
       isAuthenticated: false,

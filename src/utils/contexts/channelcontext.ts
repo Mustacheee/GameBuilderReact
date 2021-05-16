@@ -1,4 +1,4 @@
 import { createContext } from 'react';
-import { INITIAL_USER_STATE } from '../../store/reducers';
+import { EMPTY_CHANNEL } from '../channel';
 
-export default createContext(INITIAL_USER_STATE);
+export default createContext(EMPTY_CHANNEL);
