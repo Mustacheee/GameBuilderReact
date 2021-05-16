@@ -2,6 +2,7 @@ import React, { FunctionComponent, ReactNode } from 'react';
 import { connect } from 'react-redux';
 import { RootState } from '../../store/reducer';
 import { AUTHENTICATED_SOCKET } from '../../utils/helpers/sockethelpers';
+import ChannelProvider from '../ChannelProvider/ChannelProvider';
 import SocketProvider from './SocketProvider';
 
 type SocketProviderProps = {
@@ -16,8 +17,11 @@ const AuthenticatedSocketProvider: FunctionComponent<SocketProviderProps> = ({
   options = {},
 }) => {
   return (
-    <SocketProvider wsUrl={AUTHENTICATED_SOCKET} options={{...options, apiToken}}>
-      {children}
+    <SocketProvider
+      wsUrl={AUTHENTICATED_SOCKET}
+      options={{ ...options, apiToken }}
+    >
+      <ChannelProvider>{children}</ChannelProvider>
     </SocketProvider>
   );
 };

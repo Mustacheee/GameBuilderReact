@@ -1,3 +1,4 @@
 import SocketContext from './socketcontext';
+import ChannelContext from './channelcontext';
 
-export { SocketContext };
+export { ChannelContext, SocketContext };

@@ -41,6 +41,8 @@ const App: FunctionComponent<AppProps> = ({
     [isAuthenticated]
   );
 
+  console.log('appppp', isAuthenticated, isInitialized)
+
   return (
     <BrowserRouter>
       <SocketComponent>{isInitialized && routes}</SocketComponent>

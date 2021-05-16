@@ -1,4 +1,4 @@
-import { UserState } from '../../types';
+import { User } from '../../types';
 import { USER_RESET, USER_UPDATE } from './actionTypes';
 
 const userReset = () => {
@@ -7,7 +7,8 @@ const userReset = () => {
   }
 }
 
-const userUpdate = (userProps: UserState) => {
+const userUpdate = (userProps: User) => {
+  console.log(userProps)
   return {
     type: USER_UPDATE,
     user: userProps,

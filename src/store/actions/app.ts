@@ -22,7 +22,7 @@ const appStart = () => {
     if (apiToken && !isAuthenticated) {
       // Attempt to login using apiToken
       const { status, userData } = await login({ apiToken });
-      console.log(status, userData);
+      console.log('appstart', status, userData);
 
       if (status === API_SUCCESS) {
         // Update user on success
@@ -51,5 +51,6 @@ const appRestart = () => {
 
 export {
   appInitialzed,
+  appRestart,
   appStart,
 }

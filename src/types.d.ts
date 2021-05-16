@@ -1,6 +1,6 @@
 // TODO:: Move all types and interfaces here
 
-import { Action, Reducer } from 'redux';
+import { Action } from 'redux';
 import { APP_INITIALIZED } from './store/actions/actionTypes';
 
 export interface ChannelAction extends Action {
@@ -8,14 +8,7 @@ export interface ChannelAction extends Action {
 }
 
 export type User = {
-  email: string;
-  firstName: string;
-  games: Game[];
-  lastName: string;
-  username: string;
-}
-
-export interface UserState {
+  id: string;
   email: string;
   firstName: string;
   lastName: string;

@@ -17,7 +17,7 @@ const appReducer = (state = initialState, action: AppAction): AppState => {
     case APP_INITIALIZED:
       return appInitialized(state, action);
     default:
-      return initialState;
+      return state;
   }
 }
 

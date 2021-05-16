@@ -1,23 +1,24 @@
-import { UserState } from '../../types';
+import { User } from '../../types';
 import { USER_UPDATE, USER_RESET, UserAction } from '../actions/actionTypes';
 
-const initialState: UserState = {
+const INITIAL_USER_STATE: User = {
   email: '',
   firstName: '',
+  id: '',
   lastName: '',
   username: '',
 };
 
-const userUpdate = (state: UserState, { user }: UserAction) => {
-  return { ...state, ...user }
-}
+const userUpdate = (state: User, { user }: UserAction) => {
+  return { ...state, ...user };
+};
 
-const userReducer = (state = initialState, action: UserAction): UserState => {
+const userReducer = (state = INITIAL_USER_STATE, action: UserAction): User => {
   switch (action.type) {
     case USER_UPDATE:
       return userUpdate(state, action);
     case USER_RESET:
-      return initialState;
+      return INITIAL_USER_STATE;
     default:
       return state;
   }
@@ -25,4 +26,4 @@ const userReducer = (state = initialState, action: UserAction): UserState => {
 
 export default userReducer;
 
-export { userReducer };
+export { userReducer, INITIAL_USER_STATE };
