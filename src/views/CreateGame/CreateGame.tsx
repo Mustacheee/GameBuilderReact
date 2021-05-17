@@ -46,7 +46,6 @@ const CreateGame: FunctionComponent<CreateGameProps> = ({
         touched,
         values,
       }) => {
-        console.log(values, errors, touched)
         return (<form
           onSubmit={handleSubmit}
         >

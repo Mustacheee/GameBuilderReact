@@ -1,5 +1,6 @@
 import axios from 'axios';
 import { CreateGameForm } from '../views/CreateGame';
+import { CreateQuestionForm } from '../views/ViewCategory/ViewCategory';
 import { ViewGameForm } from '../views/ViewGame';
 
 const API_ERROR = 'error';
@@ -75,4 +76,19 @@ const deleteCategory = async (
   }
 };
 
-export { API_ERROR, API_SUCCESS, login, createGame, viewGame, createCategory, deleteCategory };
+const createQuestion = async (
+  gameId: string,
+  values: CreateQuestionForm,
+  apiToken: string
+) => {
+  try {
+    const { data } = await api.post(`/questions`, values, {
+      headers: { Authorization: apiToken },
+    });
+    return data;
+  } catch (err) {
+    return DEFAULT_ERROR;
+  }
+};
+
+export { API_ERROR, API_SUCCESS, login, createGame, viewGame, createCategory, deleteCategory, createQuestion };

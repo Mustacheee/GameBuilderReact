@@ -3,8 +3,8 @@ import { RootState } from '../../store/reducer';
 import styles from './Dashboard.module.scss';
 import { connect } from 'react-redux';
 import Button from '../../components/Button';
-import { goToCreateGame } from '../../utils/navigation';
-import { Link } from 'react-router-dom';
+import { goToCreateGame, goToViewGame } from '../../utils/navigation';
+import { Link, useHistory } from 'react-router-dom';
 import { GAME_CREATE } from '../../utils/routes';
 import useChannel from '../../utils/hooks/useChannel';
 import { ChannelAction, Game, User } from '../../types';
@@ -51,6 +51,7 @@ const Dashboard: FunctionComponent<DashboardProps> = ({ apiToken, user }) => {
   );
 
   const channel = useContext(ChannelContext);
+  const history = useHistory();
 
   return (
     <div className={styles.container}>
@@ -71,7 +72,7 @@ const Dashboard: FunctionComponent<DashboardProps> = ({ apiToken, user }) => {
       <div className={styles.games}>
         {games.map((game, index) => {
           return (
-            <div key={index} className={styles.game}>
+            <div key={index} className={styles.game} onClick={() => goToViewGame(game.id, history)}>
               {game.name}
             </div>
           );

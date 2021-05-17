@@ -23,6 +23,7 @@ const initialState: Game = {
 };
 
 const gameReducer = (state: Game, { type, payload }: any) => {
+  console.log(type, payload)
   switch (type) {
     case 'phx_reply':
       const newState = payload?.response || initialState;
@@ -47,11 +48,11 @@ const gameReducer = (state: Game, { type, payload }: any) => {
 const ViewGame: FunctionComponent<ViewGameProps> = ({ apiToken }) => {
   const { gameId } = useParams<{ gameId: string }>();
   const [isAddCategory, setIsAddCategory] = useState(false);
-  const [{ categories, name }] = useChannel(
+  const [{ categories = [], name = '' }] = useChannel(
     `game:${gameId}`,
     gameReducer,
     initialState
-  ) as [Game];
+  );
 
   const toggleAddCategory = () => setIsAddCategory(!isAddCategory);
 

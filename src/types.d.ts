@@ -13,7 +13,7 @@ export type User = {
   firstName: string;
   lastName: string;
   username: string;
-}
+};
 
 export interface AppState {
   isInitialized: boolean;
@@ -33,4 +33,10 @@ export interface Category {
   id: string;
   name: string;
   gameId: string;
+}
+
+export interface Question {
+  id: string;
+  text: string;
+  answer: string;
 }

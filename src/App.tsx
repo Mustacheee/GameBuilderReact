@@ -6,12 +6,13 @@ import { connect } from 'react-redux';
 import { Switch, Route, BrowserRouter, Redirect } from 'react-router-dom';
 import { Dispatch } from 'redux';
 import { appStart } from './store/actions/app';
-import { DASHBOARD, LOGIN, GAME_CREATE, GAME_VIEW } from './utils/routes';
+import { DASHBOARD, LOGIN, GAME_CREATE, GAME_VIEW, CATEGORY_VIEW } from './utils/routes';
 import CreateGame from './views/CreateGame';
 import ViewGame from './views/ViewGame';
 import { AuthenticatedSocketProvider } from './components/SocketProvider';
 import UnauthenticatedSocketProvider from './components/SocketProvider/UnauthenticatedSocketProvider';
 import { CircularProgress } from '@material-ui/core';
+import ViewCategory from './views/ViewCategory';
 
 type AppProps = {
   initializeApp: () => void;
@@ -41,8 +42,6 @@ const App: FunctionComponent<AppProps> = ({
         : UnauthenticatedSocketProvider,
     [isAuthenticated]
   );
-
-  console.log(isInitialized, isAuthenticated)
 
   if (!isInitialized) {
     return <CircularProgress />;
@@ -78,6 +77,10 @@ const getAuthenticatedRoutes = () => {
 
       <Route path={GAME_CREATE}>
         <CreateGame />
+      </Route>
+
+      <Route path={CATEGORY_VIEW}>
+        <ViewCategory />
       </Route>
 
       <Route path={GAME_VIEW}>
