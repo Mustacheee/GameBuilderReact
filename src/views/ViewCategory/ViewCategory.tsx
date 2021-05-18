@@ -52,8 +52,14 @@ const ViewCategory: FunctionComponent<ViewCategoryProps> = ({ apiToken }) => {
         const category = payload?.response?.category || initialState.category;
         const questions =
           payload?.response?.questions || initialState.questions;
-          console.log('adssdd', questions)
         return { ...state, category, questions };
+      case 'new_question':
+        const { question } = payload;
+        if (question.id) {
+          return {...state, questions: [question, ...state.questions]}
+        }
+
+        return state;
       default:
         return state;
     }
