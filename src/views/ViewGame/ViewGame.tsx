@@ -1,16 +1,25 @@
 import { connect } from 'react-redux';
-import React, { FunctionComponent, useState } from 'react';
+import React, { FunctionComponent, useState, SyntheticEvent } from 'react';
 import { useParams } from 'react-router';
 import { RootState } from '../../store/reducer';
 import { API_SUCCESS, createCategory } from '../../utils/api';
 import styles from './ViewGame.module.scss';
 import { Button } from '../../components/Button';
 import { Formik, FormikHelpers } from 'formik';
-import { TextField } from '@material-ui/core';
+import {
+  AppBar,
+  Menu,
+  MenuItem,
+  TextField,
+  Toolbar,
+  Typography,
+} from '@material-ui/core';
 import { ViewGameForm } from '.';
 import useChannel from '../../utils/hooks/useChannel';
 import { Game, Category as CategoryType } from '../../types';
 import Category from '../../components/Category';
+import { Menu as MenuIcon } from '@material-ui/icons';
+import KeyboardArrowLeftIcon from '@material-ui/icons/KeyboardArrowLeft';
 
 type ViewGameProps = {
   apiToken: string;
@@ -23,7 +32,7 @@ const initialState: Game = {
 };
 
 const gameReducer = (state: Game, { type, payload }: any) => {
-  console.log(type, payload)
+  console.log(type, payload);
   switch (type) {
     case 'phx_reply':
       const newState = payload?.response || initialState;
@@ -48,13 +57,20 @@ const gameReducer = (state: Game, { type, payload }: any) => {
 const ViewGame: FunctionComponent<ViewGameProps> = ({ apiToken }) => {
   const { gameId } = useParams<{ gameId: string }>();
   const [isAddCategory, setIsAddCategory] = useState(false);
-  const [{ categories = [], name = '' }] = useChannel(
+  const [{ categories = [], name = '' }, channel] = useChannel(
     `game:${gameId}`,
     gameReducer,
     initialState
   );
+  const [anchorEl, setAnchorEl] = useState<Element | null>(null);
 
   const toggleAddCategory = () => setIsAddCategory(!isAddCategory);
+
+  const handleClick = (event: SyntheticEvent) => {
+    setAnchorEl(event.target as HTMLElement)
+  };
+
+  const handleClose = () => setAnchorEl(null);
 
   const onSubmit = async (
     values: ViewGameForm,
@@ -80,23 +96,62 @@ const ViewGame: FunctionComponent<ViewGameProps> = ({ apiToken }) => {
 
   return (
     <div className={styles.container}>
+      <AppBar position="sticky">
+        <Toolbar>
+          <KeyboardArrowLeftIcon />
+
+          <Typography variant="h6" className={styles.title}>
+            {name}
+          </Typography>
+
+            <MenuIcon
+              aria-controls="menu"
+              aria-haspopup="true"
+              aria-label="menu"
+              onClick={handleClick}
+            />
+
+            <Menu
+              id="menu"
+              anchorEl={anchorEl}
+              keepMounted
+              open={Boolean(anchorEl)}
+              onClose={handleClose}
+            >
+              <MenuItem>Profile</MenuItem>
+              <MenuItem onClick={toggleAddCategory}>
+                {isAddCategory ? 'Close' : 'Add category'}
+              </MenuItem>
+            </Menu>
+        </Toolbar>
+      </AppBar>
+
       <Formik onSubmit={onSubmit} initialValues={initialValues}>
         {({ errors, handleChange, handleSubmit, touched, values }) => {
           return (
             <form onSubmit={handleSubmit}>
               <div className={styles.infoBlock}>
-                <span className={styles.label}>Name:</span>
-                <span className={styles.value}>{name}</span>
-
                 <div className={styles.categories}>
                   {categories.map((category: CategoryType, index) => {
-                    return <Category category={category} key={index} />;
+                    return (
+                      <Category
+                        category={category}
+                        key={index}
+                        gameChannel={channel}
+                      />
+                    );
+                  })}
+
+                  {categories.map((category: CategoryType, index) => {
+                    return (
+                      <Category
+                        category={category}
+                        key={index}
+                        gameChannel={channel}
+                      />
+                    );
                   })}
                 </div>
-
-                <Button onClick={toggleAddCategory}>
-                  {isAddCategory ? 'Close' : 'Add category'}
-                </Button>
 
                 {isAddCategory && (
                   <>

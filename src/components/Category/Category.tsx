@@ -1,4 +1,13 @@
-import React, { FunctionComponent } from 'react';
+import {
+  Avatar,
+  Card,
+  CardActions,
+  CardContent,
+  CardHeader,
+  Collapse,
+  IconButton,
+} from '@material-ui/core';
+import React, { FunctionComponent, useState } from 'react';
 import { connect } from 'react-redux';
 import { useHistory } from 'react-router';
 import { RootState } from '../../store/reducer';
@@ -7,28 +16,55 @@ import { deleteCategory } from '../../utils/api';
 import { goToViewCategory } from '../../utils/navigation';
 import Button from '../Button';
 import styles from './Category.module.scss';
+import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
+import ExpandLessIcon from '@material-ui/icons/ExpandLess';
+import { Channel } from '../../utils/channel';
 
 type CategoryProps = {
   category: CategoryType;
   apiToken: string;
+  gameChannel: Channel;
 };
 
-const Category: FunctionComponent<CategoryProps> = ({ apiToken, category }) => {
+const Category: FunctionComponent<CategoryProps> = ({ apiToken, category, gameChannel }) => {
+  console.log('hiii');
+
   const history = useHistory();
+  const [expanded, setExpanded] = useState(false);
 
   const onClickDelete = async () => {
     await deleteCategory(category.gameId, category.id, apiToken);
-  }
+  };
+
+  const toggleExpand = () => setExpanded(!expanded);
 
   return (
-    <div
-      className={styles.container}
-      onClick={() => goToViewCategory(category.gameId, category.id, history)}
-    >
-      <div className={styles.name}>{category.name}</div>
-      <div className={styles.actions}>
-        <Button onClick={onClickDelete}>Delete</Button>
-      </div>
+    <div className={styles.container}>
+      <Card variant="outlined">
+        <CardHeader title={category.name} avatar={<Avatar>C</Avatar>} />
+        <CardContent>this is a bunch of content</CardContent>
+
+        <CardActions>
+          <IconButton
+            onClick={toggleExpand}
+            aria-expanded={expanded}
+            aria-label="Show more"
+          >
+            {expanded ? <ExpandLessIcon /> : <ExpandMoreIcon />}
+          </IconButton>
+        </CardActions>
+
+        <Collapse in={expanded} timeout="auto">
+          <Button onClick={onClickDelete}>Delete</Button>
+          <Button
+            onClick={() =>
+              goToViewCategory(category.gameId, category.id, history)
+            }
+          >
+            View Details
+          </Button>
+        </Collapse>
+      </Card>
     </div>
   );
 };
@@ -36,7 +72,7 @@ const Category: FunctionComponent<CategoryProps> = ({ apiToken, category }) => {
 const mapStateToProps = (state: RootState) => {
   return {
     apiToken: state.auth.apiToken || '',
-  }
-}
+  };
+};
 
 export default connect(mapStateToProps)(Category);
