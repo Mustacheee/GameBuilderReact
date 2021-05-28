@@ -46,4 +46,5 @@ export interface Question {
 
 export type ViewProps = {
   setHeaderTitle: (title: string) => void;
+  setMenuItems: (items: Element | null) => void;
 }

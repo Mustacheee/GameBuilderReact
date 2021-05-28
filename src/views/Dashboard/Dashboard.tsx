@@ -1,53 +1,26 @@
-import React, {
-  FunctionComponent,
-  useContext,
-  useEffect,
-  useLayoutEffect,
-  useState,
-} from 'react';
+import React, { FunctionComponent, useLayoutEffect } from 'react';
 import { RootState } from '../../store/reducer';
 import styles from './Dashboard.module.scss';
 import { connect } from 'react-redux';
-import Button from '../../components/Button';
-import { goToCreateGame, goToViewGame } from '../../utils/navigation';
-import { Link, useHistory } from 'react-router-dom';
-import { GAME_CREATE } from '../../utils/routes';
-import useChannel from '../../utils/hooks/useChannel';
-import {
-  ChannelAction,
-  Game,
-  User,
-  Category as CategoryType,
-  ViewProps,
-} from '../../types';
+import { goToViewGame } from '../../utils/navigation';
+import { useHistory } from 'react-router-dom';
+import { Game, ViewProps } from '../../types';
 import { Dispatch } from 'redux';
-import { INITIAL_USER_STATE, userReducer } from '../../store/reducers';
-import { ChannelContext } from '../../utils/contexts';
 
 type DashboardProps = ViewProps & {
-  apiToken: string;
-  user: Partial<User>;
+  username: string;
   games: Game[];
 };
 
-interface DashboardInfo {
-  user: User;
-  games: Game[];
-}
-
 const Dashboard: FunctionComponent<DashboardProps> = ({
-  apiToken,
-  user,
+  username,
   setHeaderTitle,
   games,
 }) => {
-  const { firstName } = user;
-
   useLayoutEffect(() => {
-    setHeaderTitle(`Welcome back ${firstName}`);
-  }, [firstName, setHeaderTitle]);
+    setHeaderTitle(`Welcome back ${username}`);
+  }, [username, setHeaderTitle]);
 
-  const channel = useContext(ChannelContext);
   const history = useHistory();
 
   return (
@@ -72,9 +45,7 @@ const Dashboard: FunctionComponent<DashboardProps> = ({
 const mapStateToProps = (state: RootState) => {
   return {
     apiToken: state.auth.apiToken || '',
-    user: {
-      firstName: state.user.firstName,
-    },
+    username: state.user.firstName || 'New User',
     games: state.user.games || [],
   };
 };

@@ -8,9 +8,10 @@ import { GAME_CREATE } from '../../utils/routes';
 
 type CategoryProps = {
   title: string;
+  menuItems: Element | null;
 };
 
-const Header: FunctionComponent<CategoryProps> = ({ title }) => {
+const Header: FunctionComponent<CategoryProps> = ({ title, menuItems }) => {
   const [anchorEl, setAnchorEl] = useState<Element | null>(null);
   const history = useHistory();
 
@@ -45,7 +46,13 @@ const Header: FunctionComponent<CategoryProps> = ({ title }) => {
             onClose={handleClose}
           >
             <MenuItem>Profile</MenuItem>
-            <Link to={GAME_CREATE} className={styles.link}>Create Game</Link>
+            {menuItems ? (
+              menuItems
+            ) : (
+              <Link to={GAME_CREATE} className={styles.link}>
+                Create Game
+              </Link>
+            )}
           </Menu>
         </Toolbar>
       </AppBar>

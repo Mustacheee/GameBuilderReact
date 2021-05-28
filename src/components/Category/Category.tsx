@@ -32,8 +32,6 @@ const Category: FunctionComponent<CategoryProps> = ({
   category,
   gameChannel,
 }) => {
-  console.log('hiii');
-
   const history = useHistory();
   const [expanded, setExpanded] = useState(false);
   const { id, questions } = category;

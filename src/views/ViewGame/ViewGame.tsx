@@ -1,27 +1,20 @@
 import { connect } from 'react-redux';
-import React, { FunctionComponent, useState, SyntheticEvent } from 'react';
-import { useHistory, useParams } from 'react-router';
+import React, { FunctionComponent, useState, useEffect } from 'react';
+import { useParams } from 'react-router';
 import { RootState } from '../../store/reducer';
 import { API_SUCCESS, createCategory } from '../../utils/api';
 import styles from './ViewGame.module.scss';
 import { Button } from '../../components/Button';
 import { Formik, FormikHelpers } from 'formik';
-import {
-  AppBar,
-  Menu,
-  MenuItem,
-  TextField,
-  Toolbar,
-  Typography,
-} from '@material-ui/core';
+import { Fab, TextField } from '@material-ui/core';
 import { ViewGameForm } from '.';
 import useChannel from '../../utils/hooks/useChannel';
-import { Game, Category as CategoryType } from '../../types';
+import { Game, Category as CategoryType, ViewProps } from '../../types';
 import Category from '../../components/Category';
-import { Menu as MenuIcon } from '@material-ui/icons';
-import KeyboardArrowLeftIcon from '@material-ui/icons/KeyboardArrowLeft';
+import AddIcon from '@material-ui/icons/Add';
+import CloseIcon from '@material-ui/icons/Close';
 
-type ViewGameProps = {
+type ViewGameProps = ViewProps & {
   apiToken: string;
 };
 
@@ -33,7 +26,6 @@ const initialState: Game = {
 };
 
 const gameReducer = (state: Game, { type, payload }: any) => {
-  console.log(type, payload);
   let category: CategoryType | undefined;
 
   switch (type) {
@@ -55,7 +47,7 @@ const gameReducer = (state: Game, { type, payload }: any) => {
     case 'category_details':
       // category = payload?.response?.category;
       // const index = state.categories.findIndex(({ id }) => id === category?.id);
-      // if (category && index >= 0) { 
+      // if (category && index >= 0) {
       //   return {
       //     ...state,
       //     categories: state.categories.splice(index, 1, category),
@@ -68,7 +60,10 @@ const gameReducer = (state: Game, { type, payload }: any) => {
   return state;
 };
 
-const ViewGame: FunctionComponent<ViewGameProps> = ({ apiToken }) => {
+const ViewGame: FunctionComponent<ViewGameProps> = ({
+  apiToken,
+  setHeaderTitle,
+}) => {
   const { gameId } = useParams<{ gameId: string }>();
   const [isAddCategory, setIsAddCategory] = useState(false);
   const [{ categories = [], name = '' }, channel] = useChannel(
@@ -76,17 +71,12 @@ const ViewGame: FunctionComponent<ViewGameProps> = ({ apiToken }) => {
     gameReducer,
     initialState
   );
-  const [anchorEl, setAnchorEl] = useState<Element | null>(null);
 
-  const history = useHistory();
+  useEffect(() => {
+    setHeaderTitle(name);
+  }, [name, setHeaderTitle]);
 
   const toggleAddCategory = () => setIsAddCategory(!isAddCategory);
-
-  const handleClick = (event: SyntheticEvent) => {
-    setAnchorEl(event.target as HTMLElement);
-  };
-
-  const handleClose = () => setAnchorEl(null);
 
   const onSubmit = async (
     values: ViewGameForm,
@@ -112,36 +102,6 @@ const ViewGame: FunctionComponent<ViewGameProps> = ({ apiToken }) => {
 
   return (
     <div className={styles.container}>
-      <AppBar position="sticky">
-        <Toolbar>
-          <KeyboardArrowLeftIcon onClick={() => history.goBack()}/>
-
-          <Typography variant="h6" className={styles.title}>
-            {name}
-          </Typography>
-
-          <MenuIcon
-            aria-controls="menu"
-            aria-haspopup="true"
-            aria-label="menu"
-            onClick={handleClick}
-          />
-
-          <Menu
-            id="menu"
-            anchorEl={anchorEl}
-            keepMounted
-            open={Boolean(anchorEl)}
-            onClose={handleClose}
-          >
-            <MenuItem>Profile</MenuItem>
-            <MenuItem onClick={toggleAddCategory}>
-              {isAddCategory ? 'Close' : 'Add category'}
-            </MenuItem>
-          </Menu>
-        </Toolbar>
-      </AppBar>
-
       <div className={styles.categories}>
         {categories.map((category: CategoryType, index) => {
           return (
@@ -181,6 +141,14 @@ const ViewGame: FunctionComponent<ViewGameProps> = ({ apiToken }) => {
           );
         }}
       </Formik>
+
+      <Fab
+        color="primary"
+        aria-label={isAddCategory ? 'close add category' : 'add category'}
+        onClick={toggleAddCategory}
+      >
+        {isAddCategory ? <CloseIcon /> : <AddIcon />}
+      </Fab>
     </div>
   );
 };

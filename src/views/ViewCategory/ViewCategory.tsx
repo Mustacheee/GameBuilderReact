@@ -45,8 +45,6 @@ const ViewCategory: FunctionComponent<ViewCategoryProps> = ({ apiToken }) => {
     state: ViewCategoryForm,
     { type, payload }: ChannelAction
   ): ViewCategoryForm {
-    console.log('category', type, payload);
-
     switch (type) {
       case 'category_details':
         const category = payload?.response?.category || initialState.category;
@@ -75,7 +73,6 @@ const ViewCategory: FunctionComponent<ViewCategoryProps> = ({ apiToken }) => {
   const toggleAddQuestion = () => setIsAddQuestion(!isAddQuestion);
 
   const onSubmit = async (values: CreateQuestionForm) => {
-    console.log('aaaaaa', values);
     const response = await createQuestion(gameId, values, apiToken);
     console.log('response', response);
   };
@@ -97,7 +94,6 @@ const ViewCategory: FunctionComponent<ViewCategoryProps> = ({ apiToken }) => {
         validationSchema={validationSchema}
       >
         {({ errors, handleChange, handleSubmit, touched, values }) => {
-          console.log(errors, values);
           return (
             <form onSubmit={handleSubmit}>
               <div className={styles.infoBlock}>

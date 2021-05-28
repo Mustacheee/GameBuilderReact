@@ -37,7 +37,6 @@ const ChannelProvider: FunctionComponent<ChannelProviderProps> = ({
       const user = payload?.response?.user;
       const games = payload?.response?.games || [];
       const payloadEvent = payload?.response?.event  || event;
-      console.log('payloads', payloadEvent)
 
       switch (payloadEvent) {
         case 'user_join':

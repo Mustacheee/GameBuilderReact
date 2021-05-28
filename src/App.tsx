@@ -20,15 +20,12 @@ import UnauthenticatedSocketProvider from './components/SocketProvider/Unauthent
 import { CircularProgress } from '@material-ui/core';
 import ViewCategory from './views/ViewCategory';
 import Header from './components/Header';
+import { ViewProps } from './types';
 
 type AppProps = {
   initializeApp: () => void;
   isAuthenticated: boolean;
   isInitialized: boolean;
-};
-
-type ComponentProps = {
-  setHeaderTitle: (title: string) => void;
 };
 
 const App: FunctionComponent<AppProps> = ({
@@ -37,14 +34,15 @@ const App: FunctionComponent<AppProps> = ({
   isInitialized,
 }) => {
   const [headerTitle, setHeaderTitle] = useState('Welcome!');
-
+  const [menuItems, setMenuItems] = useState<Element | null>(null);
   // Initialize the application
   useEffect(() => {
     initializeApp();
   }, [initializeApp]);
 
-  const componentProps: ComponentProps = {
+  const componentProps: ViewProps = {
     setHeaderTitle,
+    setMenuItems,
   };
 
   const routes = isAuthenticated
@@ -63,7 +61,7 @@ const App: FunctionComponent<AppProps> = ({
   return (
     <BrowserRouter>
       <SocketComponent>
-        <Header title={headerTitle} />
+        <Header title={headerTitle} menuItems={menuItems}/>
 
         {isInitialized && routes}
       </SocketComponent>
@@ -71,7 +69,7 @@ const App: FunctionComponent<AppProps> = ({
   );
 };
 
-const getUnauthenticatedRoutes = (componentProps: ComponentProps) => {
+const getUnauthenticatedRoutes = (componentProps: ViewProps) => {
   return (
     <Switch>
       <Route path={LOGIN}>
@@ -85,7 +83,7 @@ const getUnauthenticatedRoutes = (componentProps: ComponentProps) => {
   );
 };
 
-const getAuthenticatedRoutes = (componentProps: ComponentProps) => {
+const getAuthenticatedRoutes = (componentProps: ViewProps) => {
   return (
     <Switch>
       <Route path={DASHBOARD}>
