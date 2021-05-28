@@ -1,4 +1,10 @@
-import React, { FunctionComponent, useContext } from 'react';
+import React, {
+  FunctionComponent,
+  useContext,
+  useEffect,
+  useLayoutEffect,
+  useState,
+} from 'react';
 import { RootState } from '../../store/reducer';
 import styles from './Dashboard.module.scss';
 import { connect } from 'react-redux';
@@ -7,14 +13,21 @@ import { goToCreateGame, goToViewGame } from '../../utils/navigation';
 import { Link, useHistory } from 'react-router-dom';
 import { GAME_CREATE } from '../../utils/routes';
 import useChannel from '../../utils/hooks/useChannel';
-import { ChannelAction, Game, User } from '../../types';
+import {
+  ChannelAction,
+  Game,
+  User,
+  Category as CategoryType,
+  ViewProps,
+} from '../../types';
 import { Dispatch } from 'redux';
-import { INITIAL_USER_STATE } from '../../store/reducers';
+import { INITIAL_USER_STATE, userReducer } from '../../store/reducers';
 import { ChannelContext } from '../../utils/contexts';
 
-type DashboardProps = {
+type DashboardProps = ViewProps & {
   apiToken: string;
   user: Partial<User>;
+  games: Game[];
 };
 
 interface DashboardInfo {
@@ -22,57 +35,31 @@ interface DashboardInfo {
   games: Game[];
 }
 
-const initialValues: DashboardInfo = {
-  user: INITIAL_USER_STATE,
-  games: [],
-};
+const Dashboard: FunctionComponent<DashboardProps> = ({
+  apiToken,
+  user,
+  setHeaderTitle,
+  games,
+}) => {
+  const { firstName } = user;
 
-const dashboardReducer = (
-  state: DashboardInfo,
-  { type, payload }: ChannelAction
-) => {
-  console.log(payload, type);
-
-  switch (type) {
-    case 'phx_reply':
-      const user = payload?.response?.user || initialValues.user;
-      const games = payload?.response?.games || initialValues.games;
-      return { ...state, games, user };
-    default:
-      return state;
-  }
-};
-
-const Dashboard: FunctionComponent<DashboardProps> = ({ apiToken, user }) => {
-  const [{ games }] = useChannel<DashboardInfo>(
-    `user:${apiToken}`,
-    dashboardReducer,
-    initialValues
-  );
+  useLayoutEffect(() => {
+    setHeaderTitle(`Welcome back ${firstName}`);
+  }, [firstName, setHeaderTitle]);
 
   const channel = useContext(ChannelContext);
   const history = useHistory();
 
   return (
     <div className={styles.container}>
-      <div className={styles.header}>
-        Welcome {user.firstName || 'New User'}
-      </div>
-      <Link to={GAME_CREATE} className={styles.link}>
-        <Button
-          onClick={() => {
-            channel.sendMessage('test_event', { message: 'hello out there!' });
-            goToCreateGame();
-          }}
-        >
-          Create Game
-        </Button>
-      </Link>
-
       <div className={styles.games}>
         {games.map((game, index) => {
           return (
-            <div key={index} className={styles.game} onClick={() => goToViewGame(game.id, history)}>
+            <div
+              key={index}
+              className={styles.game}
+              onClick={() => goToViewGame(game.id, history)}
+            >
               {game.name}
             </div>
           );
@@ -88,6 +75,7 @@ const mapStateToProps = (state: RootState) => {
     user: {
       firstName: state.user.firstName,
     },
+    games: state.user.games || [],
   };
 };
 

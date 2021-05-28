@@ -35,10 +35,13 @@ const ChannelProvider: FunctionComponent<ChannelProviderProps> = ({
     channel.onMessage = (event: string, payload) => {
       console.log('user message received', event, payload);
       const user = payload?.response?.user;
+      const games = payload?.response?.games || [];
+      const payloadEvent = payload?.response?.event  || event;
+      console.log('payloads', payloadEvent)
 
-      switch (event) {
-        case 'phx_reply':
-          updateUser(user);
+      switch (payloadEvent) {
+        case 'user_join':
+          updateUser({...user, games});
           break;
         default:
       }

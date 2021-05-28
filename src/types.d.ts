@@ -13,6 +13,7 @@ export type User = {
   firstName: string;
   lastName: string;
   username: string;
+  games?: Game[],
 };
 
 export interface AppState {
@@ -27,16 +28,22 @@ export interface Game {
   categories: Category[];
   id: string;
   name: string;
+  columns: 6;
 }
 
 export interface Category {
   id: string;
   name: string;
   gameId: string;
+  questions?: Question[];
 }
 
 export interface Question {
   id: string;
   text: string;
   answer: string;
+}
+
+export type ViewProps = {
+  setHeaderTitle: (title: string) => void;
 }

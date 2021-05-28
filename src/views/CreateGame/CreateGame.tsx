@@ -10,6 +10,7 @@ import { connect } from 'react-redux';
 import { RootState } from '../../store/reducer';
 import { goToViewGame } from '../../utils/navigation';
 import { useHistory } from 'react-router';
+import { Header } from '../../components/Header';
 
 type CreateGameProps = {
   apiToken: string;

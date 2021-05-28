@@ -6,8 +6,9 @@ import {
   CardHeader,
   Collapse,
   IconButton,
+  Typography,
 } from '@material-ui/core';
-import React, { FunctionComponent, useState } from 'react';
+import React, { FunctionComponent, useEffect, useState } from 'react';
 import { connect } from 'react-redux';
 import { useHistory } from 'react-router';
 import { RootState } from '../../store/reducer';
@@ -26,11 +27,22 @@ type CategoryProps = {
   gameChannel: Channel;
 };
 
-const Category: FunctionComponent<CategoryProps> = ({ apiToken, category, gameChannel }) => {
+const Category: FunctionComponent<CategoryProps> = ({
+  apiToken,
+  category,
+  gameChannel,
+}) => {
   console.log('hiii');
 
   const history = useHistory();
   const [expanded, setExpanded] = useState(false);
+  const { id, questions } = category;
+
+  useEffect(() => {
+    if (!questions) {
+      gameChannel.sendMessage('category_details', {categoryId: id});
+    }
+  }, [id, questions, gameChannel]);
 
   const onClickDelete = async () => {
     await deleteCategory(category.gameId, category.id, apiToken);
@@ -42,7 +54,17 @@ const Category: FunctionComponent<CategoryProps> = ({ apiToken, category, gameCh
     <div className={styles.container}>
       <Card variant="outlined">
         <CardHeader title={category.name} avatar={<Avatar>C</Avatar>} />
-        <CardContent>this is a bunch of content</CardContent>
+        <CardContent>
+          {category.questions?.length
+            ? category.questions.map((question, index) => {
+                return (
+                  <div className={styles.question} key={index}>
+                    <Typography variant="subtitle1">{question.text}</Typography>
+                  </div>
+                );
+              })
+            : null}
+        </CardContent>
 
         <CardActions>
           <IconButton

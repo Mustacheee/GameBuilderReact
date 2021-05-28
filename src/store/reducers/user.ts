@@ -1,5 +1,9 @@
 import { User } from '../../types';
-import { USER_UPDATE, USER_RESET, UserAction } from '../actions/actionTypes';
+import {
+  USER_UPDATE,
+  USER_RESET,
+  UserAction,
+} from '../actions/actionTypes';
 
 const INITIAL_USER_STATE: User = {
   email: '',
@@ -7,10 +11,11 @@ const INITIAL_USER_STATE: User = {
   id: '',
   lastName: '',
   username: '',
+  games: [],
 };
 
 const userUpdate = (state: User, { user }: UserAction) => {
-  return { ...state, ...user };
+  return { ...state, ...user};
 };
 
 const userReducer = (state = INITIAL_USER_STATE, action: UserAction): User => {
