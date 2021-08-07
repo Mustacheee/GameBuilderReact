@@ -123,9 +123,9 @@ const ViewGame: FunctionComponent<ViewGameProps> = ({
   return (
     <div className={styles.container}>
       <div className={styles.categories}>
-        {categories.map((category: CategoryType, index) => {
+        {categories.map((category: CategoryType) => {
           return (
-            <Category category={category} key={index} gameChannel={channel} />
+            <Category category={category} key={category.id} gameChannel={channel} />
           );
         })}
       </div>

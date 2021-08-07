@@ -54,9 +54,9 @@ const Category: FunctionComponent<CategoryProps> = ({
         <CardHeader title={category.name} avatar={<Avatar>C</Avatar>} />
         <CardContent>
           {category.questions?.length
-            ? category.questions.map((question, index) => {
+            ? category.questions.map((question) => {
                 return (
-                  <div className={styles.question} key={index}>
+                  <div className={styles.question} key={question.id}>
                     <Typography variant="subtitle1">{question.text}</Typography>
                   </div>
                 );

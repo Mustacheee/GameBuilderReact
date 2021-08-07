@@ -98,9 +98,9 @@ const ViewCategory: FunctionComponent<ViewCategoryProps> = ({ apiToken }) => {
             <form onSubmit={handleSubmit}>
               <div className={styles.infoBlock}>
                 <div className={styles.categories}>
-                  {questions.map((question: Question, index) => {
+                  {questions.map((question: Question) => {
                     return (
-                      <div key={index}>
+                      <div key={question.id}>
                         <div>ID: {question.id}</div>
                         <div>text: {question.text}</div>
                         <div>answer: {question.answer}</div>

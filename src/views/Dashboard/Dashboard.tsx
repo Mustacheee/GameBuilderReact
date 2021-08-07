@@ -26,10 +26,10 @@ const Dashboard: FunctionComponent<DashboardProps> = ({
   return (
     <div className={styles.container}>
       <div className={styles.games}>
-        {games.map((game, index) => {
+        {games.map((game) => {
           return (
             <div
-              key={index}
+              key={game.id}
               className={styles.game}
               onClick={() => goToViewGame(game.id, history)}
             >
