@@ -7,12 +7,16 @@ import styles from './ViewGame.module.scss';
 import { Button } from '../../components/Button';
 import { Formik, FormikHelpers } from 'formik';
 import { Fab, TextField } from '@material-ui/core';
-import { ViewGameForm } from '.';
+import { GameConfigForm, ViewGameForm } from '.';
 import useChannel from '../../utils/hooks/useChannel';
 import { Game, Category as CategoryType, ViewProps } from '../../types';
 import Category from '../../components/Category';
 import AddIcon from '@material-ui/icons/Add';
 import CloseIcon from '@material-ui/icons/Close';
+import { gameConfigSchema } from './validationSchema';
+
+const DEFAULT_COLUMN_COUNT = 5;
+const DEFAULT_QS_PER_COLUMN = 6;
 
 type ViewGameProps = ViewProps & {
   apiToken: string;
@@ -22,7 +26,12 @@ const initialState: Game = {
   categories: [],
   id: '',
   name: '',
-  columns: 6,
+  config: {
+    id: '',
+    columnCount: DEFAULT_COLUMN_COUNT,
+    gameId: '',
+    qsPerColumn: DEFAULT_QS_PER_COLUMN,
+  },
 };
 
 const gameReducer = (state: Game, { type, payload }: any) => {
@@ -31,6 +40,8 @@ const gameReducer = (state: Game, { type, payload }: any) => {
   switch (type) {
     case 'phx_reply':
       const newState = payload?.response || initialState;
+      newState.config = payload?.response.config || initialState.config;
+      console.log(payload?.response);
       return newState;
     case 'new_category':
       if (category) {
@@ -98,7 +109,16 @@ const ViewGame: FunctionComponent<ViewGameProps> = ({
     });
   };
 
-  const initialValues: ViewGameForm = { category: { name: '' } };
+  const initialValues: ViewGameForm = {
+    category: { name: '' },
+  };
+
+  const gameConfigValues: GameConfigForm = {
+    gameConfig: {
+      qs_per_column: DEFAULT_QS_PER_COLUMN,
+      column_count: DEFAULT_COLUMN_COUNT,
+    },
+  };
 
   return (
     <div className={styles.container}>
@@ -132,10 +152,65 @@ const ViewGame: FunctionComponent<ViewGameProps> = ({
                       onChange={handleChange}
                       value={values.category?.name}
                     />
-
-                    <Button type="submit">Create Category</Button>
                   </>
                 )}
+              </div>
+
+              <Button type="submit">Submit</Button>
+            </form>
+          );
+        }}
+      </Formik>
+
+      <Formik
+        onSubmit={(
+          values: GameConfigForm,
+          { setFieldError, setFieldValue }: FormikHelpers<GameConfigForm>
+        ) => {
+          console.log('hiiiiii!!!', values);
+        }}
+        initialValues={gameConfigValues}
+        validationSchema={gameConfigSchema}
+      >
+        {({ errors, handleChange, handleSubmit, touched, values }) => {
+          return (
+            <form onSubmit={handleSubmit}>
+              <div className={styles.configureForm}>
+                <TextField
+                  error={
+                    Boolean(touched.gameConfig?.qs_per_column) &&
+                    Boolean(errors.gameConfig?.qs_per_column)
+                  }
+                  fullWidth
+                  helperText={
+                    Boolean(errors.gameConfig?.qs_per_column) &&
+                    errors.gameConfig?.qs_per_column
+                  }
+                  id="GameConfig[column_count]"
+                  label="Column Count"
+                  name="GameConfig[column_count]"
+                  onChange={handleChange}
+                  value={values.gameConfig?.qs_per_column}
+                />
+
+                <TextField
+                  error={
+                    Boolean(touched.gameConfig?.column_count) &&
+                    Boolean(errors.gameConfig?.column_count)
+                  }
+                  fullWidth
+                  helperText={
+                    Boolean(errors.gameConfig?.column_count) &&
+                    errors.gameConfig?.column_count
+                  }
+                  id="GameConfig[column_count]"
+                  label="Questions Per Column"
+                  name="GameConfig[column_count]"
+                  onChange={handleChange}
+                  value={values.gameConfig?.column_count}
+                />
+
+                <Button type="submit">Submit</Button>
               </div>
             </form>
           );

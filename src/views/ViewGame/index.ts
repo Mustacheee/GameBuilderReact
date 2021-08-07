@@ -9,3 +9,10 @@ export interface ViewGameForm {
     name: string;
   };
 }
+
+export interface GameConfigForm {
+  gameConfig: {
+    qs_per_column: number;
+    column_count: number;
+  };
+}

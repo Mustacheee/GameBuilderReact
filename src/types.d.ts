@@ -28,7 +28,7 @@ export interface Game {
   categories: Category[];
   id: string;
   name: string;
-  columns: 6;
+  config?: GameConfig | null;
 }
 
 export interface Category {
@@ -42,6 +42,13 @@ export interface Question {
   id: string;
   text: string;
   answer: string;
+}
+
+export interface GameConfig {
+  id: string;
+  columnCount: number;
+  gameId: string;
+  qsPerColumn: number;
 }
 
 export type ViewProps = {

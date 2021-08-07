@@ -38,6 +38,10 @@ const Dashboard: FunctionComponent<DashboardProps> = ({
           );
         })}
       </div>
+
+      <div className={styles.post}>
+        aaaaaaa
+      </div>
     </div>
   );
 };
