@@ -1,7 +1,1 @@
-import Category from './Category';
-
-export default Category;
-
-export {
-  Category,
-}
+export { default } from './Category';

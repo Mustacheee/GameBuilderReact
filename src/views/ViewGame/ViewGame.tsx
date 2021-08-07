@@ -15,8 +15,8 @@ import AddIcon from '@material-ui/icons/Add';
 import CloseIcon from '@material-ui/icons/Close';
 import { gameConfigSchema } from './validationSchema';
 
-const DEFAULT_COLUMN_COUNT = 5;
-const DEFAULT_QS_PER_COLUMN = 6;
+const DEFAULT_COLUMN_COUNT = 3;
+const DEFAULT_QS_PER_COLUMN = 3;
 
 type ViewGameProps = ViewProps & {
   apiToken: string;
@@ -33,6 +33,13 @@ const initialState: Game = {
     qsPerColumn: DEFAULT_QS_PER_COLUMN,
   },
 };
+
+const colorScheme = [
+    'blue',
+    'yellow',
+    'purple',
+    'green',
+];
 
 const gameReducer = (state: Game, { type, payload }: any) => {
   let category: CategoryType | undefined;
@@ -120,12 +127,20 @@ const ViewGame: FunctionComponent<ViewGameProps> = ({
     },
   };
 
+  const { gameConfig } = gameConfigValues;
+  console.log('asd');
   return (
     <div className={styles.container}>
       <div className={styles.categories}>
-        {categories.map((category: CategoryType) => {
+        {categories.map((category: CategoryType, index) => {
+          const roundNumber = Math.floor(index / gameConfig.qs_per_column + 1);
           return (
-            <Category category={category} key={category.id} gameChannel={channel} />
+            <Category
+              style={{backgroundColor: colorScheme[roundNumber - 1]}}
+              category={category}
+              key={category.id}
+              gameChannel={channel}
+            />
           );
         })}
       </div>
@@ -178,23 +193,6 @@ const ViewGame: FunctionComponent<ViewGameProps> = ({
               <div className={styles.configureForm}>
                 <TextField
                   error={
-                    Boolean(touched.gameConfig?.qs_per_column) &&
-                    Boolean(errors.gameConfig?.qs_per_column)
-                  }
-                  fullWidth
-                  helperText={
-                    Boolean(errors.gameConfig?.qs_per_column) &&
-                    errors.gameConfig?.qs_per_column
-                  }
-                  id="GameConfig[column_count]"
-                  label="Column Count"
-                  name="GameConfig[column_count]"
-                  onChange={handleChange}
-                  value={values.gameConfig?.qs_per_column}
-                />
-
-                <TextField
-                  error={
                     Boolean(touched.gameConfig?.column_count) &&
                     Boolean(errors.gameConfig?.column_count)
                   }
@@ -204,10 +202,27 @@ const ViewGame: FunctionComponent<ViewGameProps> = ({
                     errors.gameConfig?.column_count
                   }
                   id="GameConfig[column_count]"
-                  label="Questions Per Column"
+                  label="Number of Categories (per Round)"
                   name="GameConfig[column_count]"
                   onChange={handleChange}
                   value={values.gameConfig?.column_count}
+                />
+
+                <TextField
+                  error={
+                    Boolean(touched.gameConfig?.qs_per_column) &&
+                    Boolean(errors.gameConfig?.qs_per_column)
+                  }
+                  fullWidth
+                  helperText={
+                    Boolean(errors.gameConfig?.qs_per_column) &&
+                    errors.gameConfig?.qs_per_column
+                  }
+                  id="GameConfig[qs_per_column]"
+                  label="Questions Per Category"
+                  name="GameConfig[qs_per_column]"
+                  onChange={handleChange}
+                  value={values.gameConfig?.qs_per_column}
                 />
 
                 <Button type="submit">Submit</Button>
