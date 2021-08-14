@@ -1,11 +1,11 @@
-import { User } from '../../types';
+import { IUser } from '../../types';
 import {
   USER_UPDATE,
   USER_RESET,
   UserAction,
 } from '../actions/actionTypes';
 
-const INITIAL_USER_STATE: User = {
+const INITIAL_USER_STATE: IUser = {
   email: '',
   firstName: '',
   id: '',
@@ -14,11 +14,11 @@ const INITIAL_USER_STATE: User = {
   games: [],
 };
 
-const userUpdate = (state: User, { user }: UserAction) => {
+const userUpdate = (state: IUser, { user }: UserAction) => {
   return { ...state, ...user};
 };
 
-const userReducer = (state = INITIAL_USER_STATE, action: UserAction): User => {
+const userReducer = (state = INITIAL_USER_STATE, action: UserAction): IUser => {
   switch (action.type) {
     case USER_UPDATE:
       return userUpdate(state, action);

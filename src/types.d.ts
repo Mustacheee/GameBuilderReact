@@ -7,7 +7,7 @@ export interface ChannelAction extends Action {
   payload: any;
 }
 
-export type User = {
+export type IUser = {
   id: string;
   email: string;
   firstName: string;
@@ -24,27 +24,27 @@ export interface AppAction {
   type: typeof APP_INITIALIZED;
 }
 
-export interface Game {
+export interface IGame {
   categories: Category[];
   id: string;
   name: string;
   config?: GameConfig | null;
 }
 
-export interface Category {
+export interface ICategory {
   id: string;
   name: string;
   gameId: string;
   questions?: Question[];
 }
 
-export interface Question {
+export interface IQuestion {
   id: string;
   text: string;
   answer: string;
 }
 
-export interface GameConfig {
+export interface IGameConfig {
   id: string;
   columnCount: number;
   gameId: string;

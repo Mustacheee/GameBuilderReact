@@ -9,7 +9,7 @@ import { Formik, FormikHelpers } from 'formik';
 import { Fab, TextField } from '@material-ui/core';
 import { GameConfigForm, ViewGameForm } from '.';
 import useChannel from '../../utils/hooks/useChannel';
-import { Game, Category as CategoryType, ViewProps } from '../../types';
+import { IGame, ICategory, ViewProps } from '../../types';
 import Category from '../../components/Category';
 import AddIcon from '@material-ui/icons/Add';
 import CloseIcon from '@material-ui/icons/Close';
@@ -22,7 +22,7 @@ type ViewGameProps = ViewProps & {
   apiToken: string;
 };
 
-const initialState: Game = {
+const initialState: IGame = {
   categories: [],
   id: '',
   name: '',
@@ -41,8 +41,8 @@ const colorScheme = [
     'green',
 ];
 
-const gameReducer = (state: Game, { type, payload }: any) => {
-  let category: CategoryType | undefined;
+const gameReducer = (state: IGame, { type, payload }: any) => {
+  let category: ICategory | undefined;
 
   switch (type) {
     case 'phx_reply':
@@ -132,7 +132,7 @@ const ViewGame: FunctionComponent<ViewGameProps> = ({
   return (
     <div className={styles.container}>
       <div className={styles.categories}>
-        {categories.map((category: CategoryType, index) => {
+        {categories.map((category: ICategory, index) => {
           const roundNumber = Math.floor(index / gameConfig.qs_per_column + 1);
           return (
             <Category

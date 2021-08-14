@@ -1,4 +1,4 @@
-import { User } from "../../types";
+import { IUser } from "../../types";
 
 export const APP_INITIALIZED = 'APP_INITIALIZED';
 
@@ -15,7 +15,7 @@ export const USER_RESET = 'USER_RESET';
 
 export interface UserAction {
     type: typeof USER_UPDATE | typeof USER_RESET;
-    user: User,
+    user: IUser,
 }
 
 

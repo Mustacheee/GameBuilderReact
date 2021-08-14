@@ -4,15 +4,15 @@ import React, { FunctionComponent, useEffect, useState } from 'react';
 import { connect } from 'react-redux';
 import { useParams } from 'react-router-dom';
 import { RootState } from '../../store/reducer';
-import { Category, ChannelAction, Question } from '../../types';
+import { ICategory, ChannelAction, IQuestion } from '../../types';
 import { createQuestion } from '../../utils/api';
 import useChannel from '../../utils/hooks/useChannel';
 import validationSchema from './validationSchema';
 import styles from './ViewCategory.module.scss';
 
 interface ViewCategoryForm {
-  questions: Question[];
-  category: Category;
+  questions: IQuestion[];
+  category: ICategory;
 }
 
 const initialState: ViewCategoryForm = {
@@ -98,7 +98,7 @@ const ViewCategory: FunctionComponent<ViewCategoryProps> = ({ apiToken }) => {
             <form onSubmit={handleSubmit}>
               <div className={styles.infoBlock}>
                 <div className={styles.categories}>
-                  {questions.map((question: Question) => {
+                  {questions.map((question: IQuestion) => {
                     return (
                       <div key={question.id}>
                         <div>ID: {question.id}</div>

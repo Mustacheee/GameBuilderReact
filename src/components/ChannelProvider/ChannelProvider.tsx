@@ -9,7 +9,7 @@ import { ChannelContext, SocketContext } from '../../utils/contexts';
 import { RootState } from '../../store/reducer';
 import { Dispatch } from 'redux';
 import { connect } from 'react-redux';
-import { User } from '../../types';
+import { IUser } from '../../types';
 import { userUpdate } from '../../store/actions/user';
 import { createFromPhoenixChannel, EMPTY_CHANNEL } from '../../utils/channel';
 
@@ -17,7 +17,7 @@ type ChannelProviderProps = {
   children?: ReactNode;
   options?: any;
   userId: string;
-  updateUser: (user: User) => void;
+  updateUser: (user: IUser) => void;
 };
 
 const ChannelProvider: FunctionComponent<ChannelProviderProps> = ({
@@ -76,7 +76,7 @@ const mapStateToProps = (state: RootState) => {
 
 const mapDispatchToProps = (dispatch: Dispatch) => {
   return {
-    updateUser: (user: User) => dispatch(userUpdate(user)),
+    updateUser: (user: IUser) => dispatch(userUpdate(user)),
   };
 };
 

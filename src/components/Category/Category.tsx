@@ -17,7 +17,7 @@ import React, {
 import { connect } from 'react-redux';
 import { useHistory } from 'react-router';
 import { RootState } from '../../store/reducer';
-import { Category as CategoryType } from '../../types';
+import { ICategory } from '../../types';
 import { deleteCategory } from '../../utils/api';
 import { goToViewCategory } from '../../utils/navigation';
 import Button from '../Button';
@@ -27,7 +27,7 @@ import ExpandLessIcon from '@material-ui/icons/ExpandLess';
 import { Channel } from '../../utils/channel';
 
 type CategoryProps = {
-  category: CategoryType;
+  category: ICategory;
   apiToken: string;
   gameChannel: Channel;
   style?: CSSProperties;

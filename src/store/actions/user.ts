@@ -1,4 +1,4 @@
-import { User } from '../../types';
+import { IUser } from '../../types';
 import { USER_RESET, USER_UPDATE } from './actionTypes';
 
 const userReset = () => {
@@ -7,7 +7,7 @@ const userReset = () => {
   }
 }
 
-const userUpdate = (userProps: User) => {
+const userUpdate = (userProps: IUser) => {
   return {
     type: USER_UPDATE,
     user: userProps,
