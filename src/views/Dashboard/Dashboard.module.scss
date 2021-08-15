@@ -2,6 +2,12 @@
     text-decoration: none;
 }
 
+.games {
+    display: grid;
+    // grid-auto-flow: row;
+    grid-template-columns: repeat(auto-fit, minmax(25%, 1fr));
+}
+
 .game {
     cursor: pointer;
 

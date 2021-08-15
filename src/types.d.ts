@@ -25,17 +25,17 @@ export interface AppAction {
 }
 
 export interface IGame {
-  categories: Category[];
+  categories: ICategory[];
   id: string;
   name: string;
-  config?: GameConfig | null;
+  config?: IGameConfig | null;
 }
 
 export interface ICategory {
   id: string;
   name: string;
   gameId: string;
-  questions?: Question[];
+  questions?: IQuestion[];
 }
 
 export interface IQuestion {
