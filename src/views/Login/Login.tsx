@@ -1,40 +1,31 @@
-import React, { FunctionComponent } from 'react';
+import React from 'react';
 import styles from './Login.module.scss';
 import validationSchema from './validationSchema';
 import { Formik, FormikHelpers } from 'formik';
 import { TextField, Button } from '@material-ui/core';
 import { login } from '../../utils/api';
-import { connect } from 'react-redux';
-import { authSuccess, authFail } from '../../store/actions/auth';
-import { Dispatch } from 'redux';
 
 interface LoginForm {
   email: string;
   password: string;
 }
 
-type LoginProps = {
-  loginFailed: () => void;
-  loginSuccess: (apiToken: string) => void;
-}
-
-const Login: FunctionComponent<LoginProps> = ({
-  loginFailed,
-  loginSuccess,
-}) => {
+const Login = () => {
   const initialValues: LoginForm = { email: '', password: '' };
 
-  const onSubmit = async (values: LoginForm, { setFieldError }: FormikHelpers<LoginForm>) => {
+  const onSubmit = async (
+    values: LoginForm,
+    { setFieldError }: FormikHelpers<LoginForm>
+  ) => {
     const { status, token, message = '' } = await login(values);
 
     if (status === 'success') {
-      loginSuccess(`Bearer ${token}`);
+      localStorage.setItem('apiToken', `Bearer ${token}`);
       return;
     }
 
-    loginFailed();
-    setFieldError('email', message)
-  }
+    setFieldError('email', message);
+  };
 
   return (
     <div className={styles.container}>
@@ -43,13 +34,7 @@ const Login: FunctionComponent<LoginProps> = ({
         onSubmit={onSubmit}
         validationSchema={validationSchema}
       >
-        {({
-          errors,
-          handleChange,
-          handleSubmit,
-          touched,
-          values,
-        }) => {
+        {({ errors, handleChange, handleSubmit, touched, values }) => {
           return (
             <form onSubmit={handleSubmit}>
               <TextField
@@ -86,11 +71,4 @@ const Login: FunctionComponent<LoginProps> = ({
   );
 };
 
-const mapDispatchToProps = (dispatch: Dispatch) => {
-  return {
-    loginSuccess: (apiToken: string) => dispatch(authSuccess(apiToken)),
-    loginFailed: () => dispatch(authFail()),
-  };
-}
-
-export default connect(null, mapDispatchToProps)(Login);
+export default Login;

@@ -1,9 +1,7 @@
 import { Button, TextField } from '@material-ui/core';
 import { Formik } from 'formik';
-import React, { FunctionComponent, useEffect, useState } from 'react';
-import { connect } from 'react-redux';
+import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import { RootState } from '../../store/reducer';
 import { ICategory, ChannelAction, IQuestion } from '../../types';
 import { createQuestion } from '../../utils/api';
 import useChannel from '../../utils/hooks/useChannel';
@@ -32,13 +30,11 @@ export interface CreateQuestionForm {
   };
 }
 
-type ViewCategoryProps = {
-  apiToken: string;
-}
-
-const ViewCategory: FunctionComponent<ViewCategoryProps> = ({ apiToken }) => {
-  const { gameId, categoryId } =
-    useParams<{ gameId: string; categoryId: string }>();
+const ViewCategory = () => {
+  const { gameId = '', categoryId = '' } = useParams<{
+    gameId: string;
+    categoryId: string;
+  }>();
   const [isAddQuestion, setIsAddQuestion] = useState(false);
 
   function gameReducer(
@@ -54,7 +50,7 @@ const ViewCategory: FunctionComponent<ViewCategoryProps> = ({ apiToken }) => {
       case 'new_question':
         const { question } = payload;
         if (question.id) {
-          return {...state, questions: [question, ...state.questions]}
+          return { ...state, questions: [question, ...state.questions] };
         }
 
         return state;
@@ -63,8 +59,11 @@ const ViewCategory: FunctionComponent<ViewCategoryProps> = ({ apiToken }) => {
     }
   }
 
-  const [{ questions = [] }, channel] =
-    useChannel(`game:${gameId}`, gameReducer, initialState);
+  const [{ questions = [] }, channel] = useChannel(
+    `game:${gameId}`,
+    gameReducer,
+    initialState
+  );
 
   useEffect(() => {
     channel.sendMessage('category_details', { categoryId });
@@ -73,7 +72,7 @@ const ViewCategory: FunctionComponent<ViewCategoryProps> = ({ apiToken }) => {
   const toggleAddQuestion = () => setIsAddQuestion(!isAddQuestion);
 
   const onSubmit = async (values: CreateQuestionForm) => {
-    const response = await createQuestion(gameId, values, apiToken);
+    const response = await createQuestion(gameId, values);
     console.log('response', response);
   };
 
@@ -160,10 +159,4 @@ const ViewCategory: FunctionComponent<ViewCategoryProps> = ({ apiToken }) => {
   );
 };
 
-const mapStateToProps = (state: RootState) => {
-  return {
-    apiToken: state.auth.apiToken || '',
-  }
-}
-
-export default connect(mapStateToProps)(ViewCategory);
+export default ViewCategory;

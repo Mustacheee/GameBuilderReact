@@ -1,4 +1,4 @@
-import { Dispatch, Reducer, useContext, useEffect, useReducer, useState } from 'react';
+import { Reducer, useContext, useEffect, useReducer, useState } from 'react';
 import { ChannelAction } from '../../types';
 import Channel, { createFromPhoenixChannel, EMPTY_CHANNEL } from '../channel';
 import { SocketContext } from '../contexts';
@@ -9,22 +9,21 @@ const useChannel = <T extends unknown>(
   initialState: T
 ): [T, Channel] => {
   const socket = useContext(SocketContext);
-  const [state, dispatch]: [any, Dispatch<ChannelAction>] = useReducer(
-    reducer,
-    initialState,
-  );
+  // TODO:: Why is reducer making me do this ???
+  const [state, dispatch] = useReducer(reducer, undefined, () => initialState);
   const [channel, setChannel] = useState(EMPTY_CHANNEL);
 
   useEffect(() => {
     const channel = socket.channel(channelName);
     channel.onMessage = (event, payload) => {
       dispatch({ type: payload?.response?.event || event, payload });
+      console.log(event, payload);
       return payload;
     };
 
     channel.join();
 
-    setChannel(createFromPhoenixChannel(channel))
+    setChannel(createFromPhoenixChannel(channel));
 
     return () => {
       channel.leave();

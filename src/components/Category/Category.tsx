@@ -14,9 +14,7 @@ import React, {
   useEffect,
   useState,
 } from 'react';
-import { connect } from 'react-redux';
-import { useHistory } from 'react-router';
-import { RootState } from '../../store/reducer';
+import { useNavigate } from 'react-router';
 import { ICategory } from '../../types';
 import { deleteCategory } from '../../utils/api';
 import { goToViewCategory } from '../../utils/navigation';
@@ -28,18 +26,16 @@ import { Channel } from '../../utils/channel';
 
 type CategoryProps = {
   category: ICategory;
-  apiToken: string;
   gameChannel: Channel;
   style?: CSSProperties;
 };
 
 const Category: FunctionComponent<CategoryProps> = ({
-  apiToken,
   category,
   gameChannel,
   style = {},
 }) => {
-  const history = useHistory();
+  const history = useNavigate();
   const [expanded, setExpanded] = useState(false);
   const { id, questions } = category;
 
@@ -50,7 +46,7 @@ const Category: FunctionComponent<CategoryProps> = ({
   }, [id, questions, gameChannel]);
 
   const onClickDelete = async () => {
-    await deleteCategory(category.gameId, category.id, apiToken);
+    await deleteCategory(category.gameId, category.id);
   };
 
   const toggleExpand = () => setExpanded(!expanded);
@@ -92,12 +88,6 @@ const Category: FunctionComponent<CategoryProps> = ({
       </Collapse>
     </Card>
   );
-};
+};;
 
-const mapStateToProps = (state: RootState) => {
-  return {
-    apiToken: state.auth.apiToken || '',
-  };
-};
-
-export default connect(mapStateToProps)(Category);
+export default Category;

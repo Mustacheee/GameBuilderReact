@@ -1,9 +1,7 @@
-// TODO:: Move all types and interfaces here
-
-import { Action } from 'redux';
 import { APP_INITIALIZED } from './store/actions/actionTypes';
 
-export interface ChannelAction extends Action {
+export interface ChannelAction {
+  type: any;
   payload: any;
 }
 
@@ -15,14 +13,6 @@ export type IUser = {
   username: string;
   games?: Game[],
 };
-
-export interface AppState {
-  isInitialized: boolean;
-}
-
-export interface AppAction {
-  type: typeof APP_INITIALIZED;
-}
 
 export interface IGame {
   categories: ICategory[];
@@ -52,6 +42,5 @@ export interface IGameConfig {
 }
 
 export type ViewProps = {
-  setHeaderTitle: (title: string) => void;
   setMenuItems: (items: Element | null) => void;
 }

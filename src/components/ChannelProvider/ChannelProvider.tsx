@@ -6,24 +6,20 @@ import React, {
   useState,
 } from 'react';
 import { ChannelContext, SocketContext } from '../../utils/contexts';
-import { RootState } from '../../store/reducer';
-import { Dispatch } from 'redux';
-import { connect } from 'react-redux';
 import { IUser } from '../../types';
-import { userUpdate } from '../../store/actions/user';
 import { createFromPhoenixChannel, EMPTY_CHANNEL } from '../../utils/channel';
 
 type ChannelProviderProps = {
   children?: ReactNode;
   options?: any;
   userId: string;
-  updateUser: (user: IUser) => void;
+  setUser: (user: IUser) => void;
 };
 
 const ChannelProvider: FunctionComponent<ChannelProviderProps> = ({
   children,
   userId,
-  updateUser,
+  setUser,
 }) => {
   const socket = useContext(SocketContext);
   const channelName = `user:${userId}`;
@@ -40,7 +36,7 @@ const ChannelProvider: FunctionComponent<ChannelProviderProps> = ({
 
       switch (payloadEvent) {
         case 'user_join':
-          updateUser({...user, games});
+          setUser({...user, games});
           break;
         default:
       }
@@ -59,7 +55,7 @@ const ChannelProvider: FunctionComponent<ChannelProviderProps> = ({
     return () => {
       channel.leave();
     };
-  }, [channelName, socket, updateUser]);
+  }, [channelName, socket, setUser]);
 
   return (
     <ChannelContext.Provider value={userChannel}>
@@ -68,16 +64,4 @@ const ChannelProvider: FunctionComponent<ChannelProviderProps> = ({
   );
 };
 
-const mapStateToProps = (state: RootState) => {
-  return {
-    userId: state.user.id,
-  };
-};
-
-const mapDispatchToProps = (dispatch: Dispatch) => {
-  return {
-    updateUser: (user: IUser) => dispatch(userUpdate(user)),
-  };
-};
-
-export default connect(mapStateToProps, mapDispatchToProps)(ChannelProvider);
+export default ChannelProvider;

@@ -1,35 +1,35 @@
+import { connect } from 'formik';
 import React, { FunctionComponent, ReactNode } from 'react';
-import { connect } from 'react-redux';
-import { RootState } from '../../store/reducer';
+import { useUserContext } from '../../store/contexts/UserContext';
 import { AUTHENTICATED_SOCKET } from '../../utils/helpers/sockethelpers';
 import ChannelProvider from '../ChannelProvider/ChannelProvider';
 import SocketProvider from './SocketProvider';
 
 type SocketProviderProps = {
-  apiToken: string;
   children?: ReactNode;
   options?: any;
 };
 
 const AuthenticatedSocketProvider: FunctionComponent<SocketProviderProps> = ({
-  apiToken,
   children,
   options = {},
 }) => {
+  // TODO:: Revisit this apiToken stuff
+  const apiToken = localStorage.getItem('apiToken') || '';
+  const { user, setUser } = useUserContext();
+
+  if (!user) return null;
+
   return (
     <SocketProvider
       wsUrl={AUTHENTICATED_SOCKET}
       options={{ ...options, apiToken }}
     >
-      <ChannelProvider>{children}</ChannelProvider>
+      <ChannelProvider userId={user.id} setUser={setUser}>
+        {children}
+      </ChannelProvider>
     </SocketProvider>
   );
 };
 
-const mapStateToProps = (state: RootState) => {
-  return {
-    apiToken: state.auth.apiToken || '',
-  };
-};
-
-export default connect(mapStateToProps)(AuthenticatedSocketProvider);
+export default AuthenticatedSocketProvider;

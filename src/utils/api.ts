@@ -23,8 +23,9 @@ const login = async (values: any) => {
   }
 };
 
-const createGame = async (values: CreateGameForm, apiToken: string) => {
+const createGame = async (values: CreateGameForm) => {
   try {
+    const apiToken = localStorage.getItem('apiToken');
     const { data } = await api.post('/games', values, {
       headers: { Authorization: apiToken },
     });
@@ -34,8 +35,9 @@ const createGame = async (values: CreateGameForm, apiToken: string) => {
   }
 };
 
-const viewGame = async (gameId: string, apiToken: string) => {
+const viewGame = async (gameId: string) => {
   try {
+    const apiToken = localStorage.getItem('apiToken');
     const { data } = await api.get(`/games/${gameId}`, {
       headers: { Authorization: apiToken },
     });
@@ -46,12 +48,9 @@ const viewGame = async (gameId: string, apiToken: string) => {
   }
 };
 
-const createCategory = async (
-  gameId: string,
-  values: ViewGameForm,
-  apiToken: string
-) => {
+const createCategory = async (gameId: string, values: ViewGameForm) => {
   try {
+    const apiToken = localStorage.getItem('apiToken');
     const { data } = await api.post(`/games/${gameId}/categories`, values, {
       headers: { Authorization: apiToken },
     });
@@ -61,27 +60,24 @@ const createCategory = async (
   }
 };
 
-const deleteCategory = async (
-  gameId: string,
-  categoryId: string,
-  apiToken: string
-) => {
+const deleteCategory = async (gameId: string, categoryId: string) => {
   try {
-    const { data } = await api.delete(`/games/${gameId}/categories/${categoryId}`, {
-      headers: { Authorization: apiToken },
-    });
+    const apiToken = localStorage.getItem('apiToken');
+    const { data } = await api.delete(
+      `/games/${gameId}/categories/${categoryId}`,
+      {
+        headers: { Authorization: apiToken },
+      }
+    );
     return data;
   } catch (err) {
     return DEFAULT_ERROR;
   }
 };
 
-const createQuestion = async (
-  gameId: string,
-  values: CreateQuestionForm,
-  apiToken: string
-) => {
+const createQuestion = async (gameId: string, values: CreateQuestionForm) => {
   try {
+    const apiToken = localStorage.getItem('apiToken');
     const { data } = await api.post(`/questions`, values, {
       headers: { Authorization: apiToken },
     });
@@ -91,4 +87,13 @@ const createQuestion = async (
   }
 };
 
-export { API_ERROR, API_SUCCESS, login, createGame, viewGame, createCategory, deleteCategory, createQuestion };
+export {
+  API_ERROR,
+  API_SUCCESS,
+  login,
+  createGame,
+  viewGame,
+  createCategory,
+  deleteCategory,
+  createQuestion,
+};

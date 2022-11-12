@@ -3,7 +3,7 @@ import React from 'react';
 import styles from './Game.module.scss';
 import { goToViewGame } from '../../utils/navigation';
 import { IGame } from '../../types';
-import { useHistory } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 type GameProps = {
   game: IGame;
@@ -13,7 +13,7 @@ type GameProps = {
 const MAX_CATEGORIES = 5;
 
 const Game = ({ game, className = '' }: GameProps): JSX.Element => {
-  const history = useHistory();
+  const history = useNavigate();
 console.log(game)
   return (
     <Paper

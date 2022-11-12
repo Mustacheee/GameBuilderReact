@@ -1,7 +1,5 @@
-import { connect } from 'react-redux';
-import React, { FunctionComponent, useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { useParams } from 'react-router';
-import { RootState } from '../../store/reducer';
 import { API_SUCCESS, createCategory } from '../../utils/api';
 import styles from './ViewGame.module.scss';
 import { Button } from '../../components/Button';
@@ -9,7 +7,7 @@ import { Formik, FormikHelpers } from 'formik';
 import { Fab, TextField } from '@material-ui/core';
 import { GameConfigForm, ViewGameForm } from '.';
 import useChannel from '../../utils/hooks/useChannel';
-import { IGame, ICategory, ViewProps } from '../../types';
+import { IGame, ICategory } from '../../types';
 import Category from '../../components/Category';
 import AddIcon from '@material-ui/icons/Add';
 import CloseIcon from '@material-ui/icons/Close';
@@ -17,10 +15,6 @@ import { gameConfigSchema } from './validationSchema';
 
 const DEFAULT_COLUMN_COUNT = 3;
 const DEFAULT_QS_PER_COLUMN = 3;
-
-type ViewGameProps = ViewProps & {
-  apiToken: string;
-};
 
 const initialState: IGame = {
   categories: [],
@@ -34,12 +28,7 @@ const initialState: IGame = {
   },
 };
 
-const colorScheme = [
-    'blue',
-    'yellow',
-    'purple',
-    'green',
-];
+const colorScheme = ['blue', 'yellow', 'purple', 'green'];
 
 const gameReducer = (state: IGame, { type, payload }: any) => {
   let category: ICategory | undefined;
@@ -78,11 +67,8 @@ const gameReducer = (state: IGame, { type, payload }: any) => {
   return state;
 };
 
-const ViewGame: FunctionComponent<ViewGameProps> = ({
-  apiToken,
-  setHeaderTitle,
-}) => {
-  const { gameId } = useParams<{ gameId: string }>();
+const ViewGame = () => {
+  const { gameId = '' } = useParams<{ gameId: string }>();
   const [isAddCategory, setIsAddCategory] = useState(false);
   const [{ categories = [], name = '' }, channel] = useChannel(
     `game:${gameId}`,
@@ -90,21 +76,13 @@ const ViewGame: FunctionComponent<ViewGameProps> = ({
     initialState
   );
 
-  useEffect(() => {
-    setHeaderTitle(name);
-  }, [name, setHeaderTitle]);
-
   const toggleAddCategory = () => setIsAddCategory(!isAddCategory);
 
   const onSubmit = async (
     values: ViewGameForm,
     { setFieldError, setFieldValue }: FormikHelpers<ViewGameForm>
   ) => {
-    const { status, errors = {} } = await createCategory(
-      gameId,
-      values,
-      apiToken
-    );
+    const { status, errors = {} } = await createCategory(gameId, values);
 
     if (status === API_SUCCESS) {
       setFieldValue('category[name]', '');
@@ -136,7 +114,7 @@ const ViewGame: FunctionComponent<ViewGameProps> = ({
           const roundNumber = Math.floor(index / gameConfig.qs_per_column + 1);
           return (
             <Category
-              style={{backgroundColor: colorScheme[roundNumber - 1]}}
+              style={{ backgroundColor: colorScheme[roundNumber - 1] }}
               category={category}
               key={category.id}
               gameChannel={channel}
@@ -243,10 +221,4 @@ const ViewGame: FunctionComponent<ViewGameProps> = ({
   );
 };
 
-const mapStateToProps = (state: RootState) => {
-  return {
-    apiToken: state.auth.apiToken || '',
-  };
-};
-
-export default connect(mapStateToProps)(ViewGame);
+export default ViewGame;
